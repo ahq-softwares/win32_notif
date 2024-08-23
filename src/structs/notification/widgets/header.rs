@@ -11,15 +11,15 @@ pub struct Header {
 
 impl Header {
   pub fn new(
-    id: String,
-    title: String,
-    arguments: String,
-    activation_type: Option<ActivationType>,
+    id: &str,
+    title: &str,
+    arguments: &str,
+    activation_type: Option<HeaderActivationType>,
   ) -> Self {
     Self {
-      id,
-      title,
-      arguments,
+      id: id.into(),
+      title: title.into(),
+      arguments: arguments.into(),
       activation_type: activation_type.unwrap_or_default().into(),
     }
   }
@@ -29,7 +29,7 @@ impl ToXML for Header {
   fn to_xml(&self) -> String {
     format!(
       r#"
-      <header title="{}" arguments="{}" id="{}" activationType="{}" />
+      <header title="{}" arguments="{}" id="{}" HeaderActivationType="{}" />
     "#,
       self.title, self.arguments, self.id, self.activation_type
     )
@@ -39,17 +39,17 @@ impl ToXML for Header {
 #[derive(Default)]
 /// Learn more about it here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-header>
-pub enum ActivationType {
+pub enum HeaderActivationType {
   #[default]
   Foreground,
   Protocol,
 }
 
-impl Into<String> for ActivationType {
+impl Into<String> for HeaderActivationType {
   fn into(self) -> String {
     match self {
-      ActivationType::Foreground => "foreground".to_string(),
-      ActivationType::Protocol => "protocol".to_string(),
+      HeaderActivationType::Foreground => "foreground".to_string(),
+      HeaderActivationType::Protocol => "protocol".to_string(),
     }
   }
 }

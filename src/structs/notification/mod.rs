@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-use super::ToXML;
+use crate::NotifError;
+
+use super::{ToXML, ToastsNotifier};
 use actions::ActionElement;
 use audio::Audio;
 use header::Header;
@@ -15,12 +17,21 @@ mod widgets;
 pub use widgets::*;
 
 /// The Notification Object
-pub struct Notification {
+pub struct Notification<'a> {
   _toast: ToastNotification,
+  _notifier: &'a ToastsNotifier
 }
 
-impl Notification {
-  pub fn show(&self) {}
+impl<'a> Notification<'a> {
+  pub fn show(&self) -> Result<(), NotifError> {
+    Ok(self._notifier.get_raw_handle().Show(&self._toast)?)
+  }
+
+  #[cfg(feature = "unsafe")]
+  /// Required Features: unsafe
+  pub unsafe fn as_raw(&self) -> &ToastNotification {
+    &self._toast
+  }
 }
 
 pub trait ActionableXML: ActionElement + ToXML {}
@@ -33,6 +44,7 @@ pub struct NotificationBuilder {
   visual: Vec<Box<dyn ToXML>>,
   actions: Vec<Box<dyn ActionableXML>>,
   pub values: HashMap<String, String>,
+  pub app_id: String,
 }
 
 macro_rules! impl_mut {
@@ -63,12 +75,18 @@ impl NotificationBuilder {
       commands: None,
       header: None,
       values: HashMap::new(),
+      app_id: "".into()
     }
   }
 
   impl_mut!(audio -> Audio);
   impl_mut!(header -> Header);
   impl_mut!(commands -> Commands);
+
+  pub fn set_appid(mut self, appid: String) -> Self {
+    self.app_id = appid;
+    self
+  }
 
   pub fn value(mut self, key: String, value: String) -> Self {
     self.values.insert(key, value);
@@ -90,7 +108,7 @@ impl NotificationBuilder {
     self
   }
 
-  pub fn build(self, sequence: u32) -> Result<Notification, BuilderError> {
+  pub fn build<'a>(self, sequence: u32, _notifier: &'a ToastsNotifier, tag: &str, group: &str) -> Result<Notification<'a>, NotifError> {
     let visual = map!(self.visual);
     let actions = map!(self.actions);
 
@@ -135,22 +153,11 @@ impl NotificationBuilder {
     let data = NotificationData::new()?;
     data.SetSequenceNumber(sequence)?;
 
-    todo!()
+    let toast = ToastNotification::CreateToastNotification(&doc)?;
+    toast.SetData(&data)?;
+    toast.SetTag(&tag.into())?;
+    toast.SetGroup(&group.into())?;
+
+    Ok(Notification { _toast: toast, _notifier })
   }
 }
-
-macro_rules! from_impl {
-  ($x:ty => $y:ident) => {
-    impl From<$x> for BuilderError {
-      fn from(value: $x) -> Self {
-        Self::$y(value)
-      }
-    }
-  };
-}
-
-pub enum BuilderError {
-  WindowsCore(windows::core::Error),
-}
-
-from_impl!(windows::core::Error => WindowsCore);

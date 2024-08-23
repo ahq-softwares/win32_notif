@@ -1,7 +1,10 @@
 [package]
 name = "win32_notif"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+
+[package.metadata.docs.rs]
+all-features = true
 
 [dependencies]
 windows = { version = "0.58.0", features = [
@@ -10,3 +13,7 @@ windows = { version = "0.58.0", features = [
   "UI_Notifications",
   "Foundation_Collections",
 ] }
+
+[features]
+default = []
+unsafe = []
