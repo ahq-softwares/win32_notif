@@ -1,6 +1,6 @@
 [package]
 name = "win32_notif"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 
 [package.metadata.docs.rs]

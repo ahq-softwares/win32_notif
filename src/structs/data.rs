@@ -3,13 +3,13 @@ use windows::UI::Notifications::NotificationData;
 use crate::NotifError;
 
 pub struct NotificationDataSet {
-  _inner: NotificationData 
+  _inner: NotificationData,
 }
 
 impl NotificationDataSet {
   pub fn new() -> Result<Self, NotifError> {
     Ok(Self {
-      _inner: NotificationData::new()?
+      _inner: NotificationData::new()?,
     })
   }
 

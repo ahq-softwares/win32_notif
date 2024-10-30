@@ -56,7 +56,7 @@ macro_rules! from_impl {
     }
   };
 }
-  
+
 #[derive(Debug)]
 pub enum NotifError {
   WindowsCore(windows::core::Error),
@@ -69,5 +69,5 @@ impl Display for NotifError {
 }
 
 impl Error for NotifError {}
-  
+
 from_impl!(windows::core::Error => WindowsCore);

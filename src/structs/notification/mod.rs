@@ -4,9 +4,9 @@ use crate::NotifError;
 
 use super::{ToXML, ToastsNotifier};
 use actions::ActionElement;
-use visual::VisualElement;
 use audio::Audio;
 use header::Header;
+use visual::VisualElement;
 use widgets::commands::Commands;
 use windows::{
   core::HSTRING,
@@ -20,7 +20,7 @@ pub use widgets::*;
 /// The Notification Object
 pub struct Notification<'a> {
   _toast: ToastNotification,
-  _notifier: &'a ToastsNotifier
+  _notifier: &'a ToastsNotifier,
 }
 
 impl<'a> Notification<'a> {
@@ -113,7 +113,13 @@ impl NotificationBuilder {
     self
   }
 
-  pub fn build<'a>(self, sequence: u32, _notifier: &'a ToastsNotifier, tag: &str, group: &str) -> Result<Notification<'a>, NotifError> {
+  pub fn build<'a>(
+    self,
+    sequence: u32,
+    _notifier: &'a ToastsNotifier,
+    tag: &str,
+    group: &str,
+  ) -> Result<Notification<'a>, NotifError> {
     let visual = map!(self.visual);
     let actions = map!(self.actions);
 
@@ -169,6 +175,9 @@ impl NotificationBuilder {
     toast.SetGroup(&group.into())?;
     toast.SetData(&data)?;
 
-    Ok(Notification { _toast: toast, _notifier })
+    Ok(Notification {
+      _toast: toast,
+      _notifier,
+    })
   }
 }

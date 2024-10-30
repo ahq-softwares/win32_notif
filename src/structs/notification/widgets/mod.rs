@@ -18,11 +18,13 @@ pub struct RawXML {
 impl RawXML {
   /// Creates a new instance of `RawXML` that can hold arbitrary String
   /// This is useful when you want to use a widget that is not yet supported
-  /// 
+  ///
   /// # Safety
   /// This function is unsafe because it bypasses all the safety that other structs guarantee
   pub unsafe fn new<T: ToString>(raw: T) -> Self {
-    Self { raw: raw.to_string() }
+    Self {
+      raw: raw.to_string(),
+    }
   }
 }
 
