@@ -4,6 +4,7 @@ use crate::NotifError;
 
 use super::{ToXML, ToastsNotifier};
 use actions::ActionElement;
+use visual::VisualElement;
 use audio::Audio;
 use header::Header;
 use widgets::commands::Commands;
@@ -35,16 +36,16 @@ impl<'a> Notification<'a> {
 }
 
 pub trait ActionableXML: ActionElement + ToXML {}
+pub trait ToastVisualableXML: VisualElement + ToXML {}
 
 /// The way to build a Notification
 pub struct NotificationBuilder {
   audio: Option<Audio>,
   header: Option<Header>,
   commands: Option<Commands>,
-  visual: Vec<Box<dyn ToXML>>,
+  visual: Vec<Box<dyn ToastVisualableXML>>,
   actions: Vec<Box<dyn ActionableXML>>,
   pub values: HashMap<String, String>,
-  pub app_id: String,
 }
 
 macro_rules! impl_mut {
@@ -75,7 +76,6 @@ impl NotificationBuilder {
       commands: None,
       header: None,
       values: HashMap::new(),
-      app_id: "".into()
     }
   }
 
@@ -83,13 +83,8 @@ impl NotificationBuilder {
   impl_mut!(header -> Header);
   impl_mut!(commands -> Commands);
 
-  pub fn set_appid(mut self, appid: String) -> Self {
-    self.app_id = appid;
-    self
-  }
-
-  pub fn value(mut self, key: String, value: String) -> Self {
-    self.values.insert(key, value);
+  pub fn value<T: Into<String>, E: Into<String>>(mut self, key: T, value: E) -> Self {
+    self.values.insert(key.into(), value.into());
     self
   }
 
@@ -105,6 +100,16 @@ impl NotificationBuilder {
 
   pub fn actions(mut self, actions: Vec<Box<dyn ActionableXML>>) -> Self {
     self.actions = actions;
+    self
+  }
+
+  pub fn visual<T: ToastVisualableXML + 'static>(mut self, visual: T) -> Self {
+    self.visual.push(Box::new(visual));
+    self
+  }
+
+  pub fn visuals(mut self, visual: Vec<Box<dyn ToastVisualableXML>>) -> Self {
+    self.visual = visual;
     self
   }
 
@@ -147,16 +152,22 @@ impl NotificationBuilder {
     "#
     );
 
+    println!("{_xml}");
+
     let doc = XmlDocument::new()?;
     doc.LoadXml(&HSTRING::from(_xml))?;
 
     let data = NotificationData::new()?;
     data.SetSequenceNumber(sequence)?;
 
+    for (key, value) in self.values {
+      data.Values()?.Insert(&key.into(), &value.into())?;
+    }
+
     let toast = ToastNotification::CreateToastNotification(&doc)?;
-    toast.SetData(&data)?;
     toast.SetTag(&tag.into())?;
     toast.SetGroup(&group.into())?;
+    toast.SetData(&data)?;
 
     Ok(Notification { _toast: toast, _notifier })
   }

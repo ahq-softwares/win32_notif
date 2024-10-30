@@ -1,1 +1,2 @@
 
+pub trait VisualElement {}
