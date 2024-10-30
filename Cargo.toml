@@ -1,7 +1,11 @@
 [package]
 name = "win32_notif"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+description = "Wrapper around Windows UWP XAML (WinRT) Notification api"
+license = "MIT"
+repository = "https://github.com/AHQ-Softwares/win32_notif"
+authors = ["AHQ Softwares", "AHQ <ahqsecret@gmail.com>"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -15,5 +19,5 @@ windows = { version = "0.58.0", features = [
 ] }
 
 [features]
-default = []
+default = ["unsafe"]
 unsafe = []

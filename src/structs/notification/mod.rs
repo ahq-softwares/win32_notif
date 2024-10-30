@@ -28,6 +28,7 @@ impl<'a> Notification<'a> {
     Ok(self._notifier.get_raw_handle().Show(&self._toast)?)
   }
 
+  #[cfg_attr(docsrs, doc(cfg(feature = "unsafe")))]
   #[cfg(feature = "unsafe")]
   /// Required Features: unsafe
   pub unsafe fn as_raw(&self) -> &ToastNotification {
@@ -58,6 +59,7 @@ macro_rules! impl_mut {
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! map {
   ($x:expr) => {
     $x.into_iter()

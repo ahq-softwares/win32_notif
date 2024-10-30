@@ -1,11 +1,6 @@
 use win32_notif::{
-  notification::{
-    actions::{action::ActivationType, input::InputType, Input},
-    header::{Header, HeaderActivationType},
-    visual::progress::Progress,
-    RawXML,
-  },
-  refvar, string, NotificationBuilder, ToastsNotifier,
+  notification::visual::progress::Progress,
+  string, NotificationBuilder, ToastsNotifier,
 };
 
 fn main() {
@@ -21,7 +16,7 @@ fn main() {
     .build(1, &notifier, "a", "ahq")
     .unwrap();
 
-  notif.show();
+  let _ = notif.show();
 
   loop {}
 }
