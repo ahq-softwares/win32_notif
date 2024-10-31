@@ -3,7 +3,9 @@ name: Publish to cargo
 on:
   push:
     branches:
-      - release
+      - master
+    paths:
+      - Cargo.toml
 
 jobs:
   publish:
