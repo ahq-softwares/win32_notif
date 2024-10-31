@@ -48,7 +48,7 @@ impl ToXML for ActionButton {
   fn to_xml(&self) -> String {
     format!(
       r#"
-          <button content="{}" arguments="{}" activationType="{}" afterActivationBehavior="{}" imageUri="{}" hint-inputId="{}" hint-buttonStyle="{}" hint-toolTip="{}" {} />
+          <action content="{}" arguments="{}" activationType="{}" afterActivationBehavior="{}" imageUri="{}" hint-inputId="{}" hint-buttonStyle="{}" hint-toolTip="{}" {} />
         "#,
       self.content,
       self.arguments,
