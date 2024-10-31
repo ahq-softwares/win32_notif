@@ -24,12 +24,14 @@ jobs:
           rustup default stable
 
       - name: Build Docs
-        run: cargo doc --no-deps --release
+        run: |
+          cargo doc --no-deps --release
+          echo|set /p="<meta http-equiv="refresh" content="0; url=win32_notif/index.html">" > docs/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./target/doc/win32_notif
+          path: ./target/doc/
 
   deploy:
     environment:
@@ -38,6 +40,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
