@@ -6,4 +6,4 @@ pub trait VisualElement {}
 
 pub use image::{Image, Placement};
 pub use progress::Progress;
-pub use text::{Text, AttributionPlacement};
+pub use text::{AttributionPlacement, Text};

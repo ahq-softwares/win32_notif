@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::NotifError;
 
-use super::{ToXML, ToastsNotifier};
+use super::{handler::{NotificationDismissedEventHandler, NotificationFailedEventHandler}, NotificationActivatedEventHandler, NotificationImpl, ToXML, ToastsNotifier};
 use actions::ActionElement;
 use audio::Audio;
 use header::Header;
@@ -17,10 +17,22 @@ use windows::{
 mod widgets;
 pub use widgets::*;
 
-/// The Notification Object
-pub struct Notification<'a> {
-  _toast: ToastNotification,
-  _notifier: &'a ToastsNotifier,
+/// This is a partial version of notification
+/// You can convert to to a Notification **but it will lost the handler tokens**
+pub struct PartialNotification<'a> {
+  pub(crate) _toast: &'a ToastNotification,
+}
+
+impl<'a> PartialNotification<'a> {
+  pub fn cast(self, notifier: &'a ToastsNotifier) -> Notification<'a> {
+    Notification {
+      _toast: self._toast.clone(),
+      _notifier: notifier,
+      activated_event_handler_token: None,
+      dismissed_event_handler_token: None,
+      failed_event_handler_token: None,
+    }
+  }
 }
 
 impl<'a> Notification<'a> {
@@ -36,6 +48,34 @@ impl<'a> Notification<'a> {
   }
 }
 
+/// The Notification Object
+pub struct Notification<'a> {
+  pub(crate) _toast: ToastNotification,
+  pub(crate) _notifier: &'a ToastsNotifier,
+  pub activated_event_handler_token: Option<i64>,
+  pub dismissed_event_handler_token: Option<i64>,
+  pub failed_event_handler_token: Option<i64>,
+}
+
+impl NotificationImpl for Notification<'_> {
+  fn notif(&self) -> &ToastNotification {
+    &self._toast
+  }
+}
+
+pub enum ToastDuration {
+  Long,
+  Short,
+}
+
+pub enum Scenario {
+  Default,
+  Reminder,
+  Alarm,
+  IncomingCall,
+  Urgent,
+}
+
 pub trait ActionableXML: ActionElement + ToXML {}
 pub trait ToastVisualableXML: VisualElement + ToXML {}
 
@@ -46,6 +86,12 @@ pub struct NotificationBuilder {
   commands: Option<Commands>,
   visual: Vec<Box<dyn ToastVisualableXML>>,
   actions: Vec<Box<dyn ActionableXML>>,
+  on_activated: Option<NotificationActivatedEventHandler>,
+  on_failed: Option<NotificationFailedEventHandler>,
+  on_dismissed: Option<NotificationDismissedEventHandler>,
+  duration: &'static str,
+  scenario: &'static str,
+  use_button_style: &'static str,
   pub values: HashMap<String, String>,
 }
 
@@ -77,6 +123,12 @@ impl NotificationBuilder {
       audio: None,
       commands: None,
       header: None,
+      on_activated: None,
+      on_dismissed: None,
+      on_failed: None,
+      duration: "duration=short",
+      scenario: "",
+      use_button_style: "",
       values: HashMap::new(),
     }
   }
@@ -84,6 +136,34 @@ impl NotificationBuilder {
   impl_mut!(audio -> Audio);
   impl_mut!(header -> Header);
   impl_mut!(commands -> Commands);
+
+  pub fn set_duration(mut self, duration: ToastDuration) -> Self {
+    match duration {
+      ToastDuration::Short => self.duration = "duration=short",
+      ToastDuration::Long => self.duration = "duration=long",
+    }
+    self
+  }
+
+  pub fn set_scenario(mut self, scenario: Scenario) -> Self {
+    match scenario {
+      Scenario::Default => self.scenario = "",
+      Scenario::Alarm => self.scenario = "scenario=\"alarm\"",
+      Scenario::Reminder => self.scenario = "scenario=\"reminder\"",
+      Scenario::IncomingCall => self.scenario = "scenario=\"incomingCall\"",
+      Scenario::Urgent => self.scenario = "scenario=\"urgent\"",
+    }
+    self
+  }
+
+  pub fn set_use_button_style(mut self, use_button_style: bool) -> Self {
+    if use_button_style {
+      self.use_button_style = "useButtonStyle=\"True\""
+    } else {
+      self.use_button_style = ""
+    }
+    self
+  }
 
   pub fn value<T: Into<String>, E: Into<String>>(mut self, key: T, value: E) -> Self {
     self.values.insert(key.into(), value.into());
@@ -112,6 +192,21 @@ impl NotificationBuilder {
 
   pub fn visuals(mut self, visual: Vec<Box<dyn ToastVisualableXML>>) -> Self {
     self.visual = visual;
+    self
+  }
+
+  pub fn on_activated(mut self, on_activated: NotificationActivatedEventHandler) -> Self {
+    self.on_activated = Some(on_activated);
+    self
+  }
+
+  pub fn on_failed(mut self, on_failed: NotificationFailedEventHandler) -> Self {
+    self.on_failed = Some(on_failed);
+    self
+  }
+
+  pub fn on_dismissed(mut self, on_dismissed: NotificationDismissedEventHandler) -> Self {
+    self.on_dismissed = Some(on_dismissed);
     self
   }
 
@@ -144,7 +239,7 @@ impl NotificationBuilder {
 
     let _xml = format!(
       r#"
-      <toast>
+      <toast {dur} {scenario} {button_style}>
         {audio}
         {commands}
         {header}
@@ -157,10 +252,11 @@ impl NotificationBuilder {
           {actions}
         </actions>
       </toast>
-    "#
+    "#,
+      dur = self.duration,
+      scenario = self.scenario,
+      button_style = self.use_button_style
     );
-
-    println!("{_xml}");
 
     let doc = XmlDocument::new()?;
     doc.LoadXml(&HSTRING::from(_xml))?;
@@ -172,7 +268,23 @@ impl NotificationBuilder {
       data.Values()?.Insert(&key.into(), &value.into())?;
     }
 
+    let mut activated_event_handler_token = None;
+    let mut dismissed_event_handler_token = None;
+    let mut failed_event_handler_token = None;
+
     let toast = ToastNotification::CreateToastNotification(&doc)?;
+    if let Some(x) = self.on_activated {
+      let token = toast.Activated(&x.handler)?;
+      activated_event_handler_token = Some(token.Value);
+    }
+    if let Some(x) = self.on_dismissed {
+      let token = toast.Dismissed(&x.handler)?;
+      dismissed_event_handler_token = Some(token.Value);
+    }
+    if let Some(x) = self.on_failed {
+      let token = toast.Failed(&x.handler)?;
+      failed_event_handler_token = Some(token.Value);
+    }
     toast.SetTag(&tag.into())?;
     toast.SetGroup(&group.into())?;
     toast.SetData(&data)?;
@@ -180,6 +292,9 @@ impl NotificationBuilder {
     Ok(Notification {
       _toast: toast,
       _notifier,
+      activated_event_handler_token,
+      dismissed_event_handler_token,
+      failed_event_handler_token,
     })
   }
 }

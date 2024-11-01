@@ -5,6 +5,30 @@
 //!
 //! This library implements UWP XML Toast Notification
 //! This is a safe wrapper around the official C++ win32 apis
+//!
+//! # Example
+//! ```rust
+//! use win32_notif::{
+//!  notification::visual::progress::Progress,
+//!  string, NotificationBuilder, ToastsNotifier,
+//! };
+//!
+//! fn main() {
+//!   let notifier = ToastsNotifier::new("Microsoft.Windows.Explorer").unwrap();
+//!   let notif = NotificationBuilder::new()
+//!     .visual(Progress::new(
+//!       None,
+//!       string!("Downloading..."),
+//!       string!("0.30"),
+//!       None,
+//!     ))
+//!     .build(1, &notifier, "a", "ahq")
+//!     .unwrap();
+//!
+//!   let _ = notif.show();
+//!   loop {}
+//! }
+//! ```
 
 #[macro_export]
 ///
@@ -24,29 +48,14 @@ macro_rules! string {
     };
 }
 
-#[macro_export]
-///
-/// Creates a reference to a value in notification
-///
-/// # Example
-/// ```rust
-/// use win32_notif::refvar;
-///
-/// fn main() {
-///     let value = refvar!(status);
-/// }
-/// ```
-macro_rules! refvar {
-    ($($x:tt)*) => {
-        format!("{{{}}}", stringify!($($x)*))
-    };
-}
-
 mod structs;
 
 use std::{error::Error, fmt::Display};
 
 pub use structs::*;
+
+/// Re-export of windows crate
+pub use windows;
 
 macro_rules! from_impl {
   ($x:ty => $y:ident) => {
@@ -61,6 +70,7 @@ macro_rules! from_impl {
 #[derive(Debug)]
 pub enum NotifError {
   WindowsCore(windows::core::Error),
+  UnknownAndImpossible,
 }
 
 impl Display for NotifError {

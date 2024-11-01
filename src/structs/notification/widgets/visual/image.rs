@@ -64,10 +64,17 @@ impl ToXML for Image {
       "#,
       id = self.id,
       src = &self.src,
-      alt = self.alt.clone().map_or_else(|| string!(""), |x| format!("alt=\"{x}\"")),
+      alt = self
+        .alt
+        .clone()
+        .map_or_else(|| string!(""), |x| format!("alt=\"{x}\"")),
       add_image_query = self.add_image_query,
       placement = self.placement.to_string(),
-      crop = if self.crop_circle {"hint-crop=\"circle\""} else { "" }
+      crop = if self.crop_circle {
+        "hint-crop=\"circle\""
+      } else {
+        ""
+      }
     )
   }
 }
