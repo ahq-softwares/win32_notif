@@ -4,8 +4,8 @@ pub mod notification;
 pub mod notifier;
 
 pub use data::NotificationDataSet;
-pub use handler::NotificationActivatedEventHandler;
-use handler::{NotificationDismissedEventHandler, NotificationFailedEventHandler};
+pub use handler::{NotificationActivatedEventHandler, NotificationDismissedEventHandler, NotificationFailedEventHandler};
+
 pub use notification::{Notification, NotificationBuilder};
 pub use notifier::ToastsNotifier;
 use windows::{
