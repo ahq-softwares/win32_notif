@@ -64,6 +64,7 @@ impl NotificationImpl for Notification<'_> {
 }
 
 pub enum ToastDuration {
+  None,
   Long,
   Short,
 }
@@ -126,7 +127,7 @@ impl NotificationBuilder {
       on_activated: None,
       on_dismissed: None,
       on_failed: None,
-      duration: "duration=short",
+      duration: "",
       scenario: "",
       use_button_style: "",
       values: HashMap::new(),
@@ -139,8 +140,9 @@ impl NotificationBuilder {
 
   pub fn set_duration(mut self, duration: ToastDuration) -> Self {
     match duration {
-      ToastDuration::Short => self.duration = "duration=short",
-      ToastDuration::Long => self.duration = "duration=long",
+      ToastDuration::None => self.duration = "",
+      ToastDuration::Short => self.duration = "duration=\"short\"",
+      ToastDuration::Long => self.duration = "duration=\"long\"",
     }
     self
   }
