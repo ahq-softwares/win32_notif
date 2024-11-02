@@ -18,13 +18,19 @@ mod widgets;
 pub use widgets::*;
 
 /// This is a partial version of notification
-/// You can convert to to a Notification **but it will lost the handler tokens**
+/// You can convert it to a Notification **but it will lost the handler tokens**
 pub struct PartialNotification<'a> {
   pub(crate) _toast: &'a ToastNotification,
 }
 
 impl<'a> PartialNotification<'a> {
+  #[deprecated = "Use `upgrade` instead"]
   pub fn cast(self, notifier: &'a ToastsNotifier) -> Notification<'a> {
+    self.upgrade(notifier)
+  }
+
+  /// Converts to a Notification **but it will lost the handler tokens**
+  pub fn upgrade(self, notifier: &'a ToastsNotifier) -> Notification<'a> {
     Notification {
       _toast: self._toast.clone(),
       _notifier: notifier,
@@ -32,6 +38,12 @@ impl<'a> PartialNotification<'a> {
       dismissed_event_handler_token: None,
       failed_event_handler_token: None,
     }
+  }
+}
+
+impl<'a> NotificationImpl for PartialNotification<'a> {
+  fn notif(&self) -> &ToastNotification {
+    &self._toast
   }
 }
 
