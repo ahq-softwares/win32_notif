@@ -6,11 +6,11 @@ use super::ActionElement;
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-input>
 pub struct Input {
-  pub children: String,
   pub id: String,
   pub title: String,
-  pub r#type: String,
   pub placeHolder: String,
+  children: String,
+  r#type: String,
 }
 
 /// Learn more here
@@ -21,6 +21,20 @@ pub enum InputType {
 }
 
 impl Input {
+  pub fn create_text_input(id: &str, title: &str, place_holder: &str) -> Self {
+    Self::new(id.into(), title.into(), InputType::Text, place_holder.into())
+  }
+
+  pub fn create_selection_input(id: &str, title: &str, place_holder: &str, selections: Vec<Selection>) -> Self {
+    Self {
+      id: id.into(),
+      title: title.into(),
+      r#type: "selection".into(),
+      placeHolder: place_holder.into(),
+      children: map!(selections),
+    }
+  }
+
   pub fn new(id: String, title: String, r#type: InputType, place_holder: String) -> Self {
     let (r#type, ch) = match r#type {
       InputType::Text => ("text", vec![]),

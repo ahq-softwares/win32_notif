@@ -16,6 +16,20 @@ pub struct Text {
 }
 
 impl Text {
+  pub fn create(id: u64, body: &str) -> Self {
+    Self::new(id, None, None, body.into())
+  }
+
+  pub fn set_lang(mut self, lang: String) -> Self {
+    self.lang = Some(lang);
+    self
+  }
+
+  pub fn set_placement(mut self, placement: AttributionPlacement) -> Self {
+    self.placement = Some(placement);
+    self
+  }
+
   pub fn new(
     id: u64,
     lang: Option<String>,

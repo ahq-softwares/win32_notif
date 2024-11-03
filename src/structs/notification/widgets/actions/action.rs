@@ -8,17 +8,81 @@ use super::ActionElement;
 pub struct ActionButton {
   pub content: String,
   pub arguments: String,
-  pub activationType: String,
-  pub afterActivationBehavior: String,
   pub imageUri: Option<String>,
   pub hint_inputid: String,
-  pub hint_buttonStyle: String,
   pub hint_toolTip: String,
-  pub placement: bool,
+
+  activationType: String,
+  afterActivationBehavior: String,
+  hint_buttonStyle: String,
+  placement: bool,
 }
 
 #[allow(non_snake_case)]
 impl ActionButton {
+  pub fn create(content: &str) -> Self {
+    Self::new(
+      content.into(),
+      content.into(),
+      ActivationType::Foreground,
+      AfterActivationBehavior::Default,
+      None,
+      "".into(),
+      HintButtonStyle::None,
+      "".into(),
+      false
+    )
+  }
+
+  pub fn set_id(mut self, id: &str) -> Self {
+    self.arguments = id.into();
+    self
+  }
+
+  /// Provide input id to place the button near an input
+  pub fn set_input_id(mut self, id: &str) -> Self {
+    self.hint_inputid = id.into();
+    self
+  }
+
+  pub fn set_tooltip(mut self, tooltip: &str) -> Self {
+    self.hint_toolTip = tooltip.into();
+    self
+  }
+
+  pub fn set_image_uri(mut self, uri: &str) -> Self {
+    self.imageUri = Some(uri.into());
+    self
+  }
+
+  pub fn set_context_menu_placement(mut self, enabled: bool) -> Self {
+    self.placement = enabled;
+    self
+  }
+
+  pub fn set_activation_type(mut self, activation_type: ActivationType) -> Self {
+    self.activationType = activation_type.into();
+    self
+  }
+
+  pub fn set_after_activation_behavior(
+    mut self,
+    after_activation_behavior: AfterActivationBehavior,
+  ) -> Self {
+    self.afterActivationBehavior = after_activation_behavior.into();
+    self
+  }
+
+  pub fn set_button_style(mut self, hint_buttonStyle: HintButtonStyle) -> Self {
+    self.hint_buttonStyle = hint_buttonStyle.into();
+    self
+  }
+
+  pub fn set_content(mut self, content: &str) -> Self {
+    self.content = content.into();
+    self
+  }
+
   pub fn new(
     content: String,
     arguments: String,
