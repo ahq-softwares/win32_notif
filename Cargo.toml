@@ -10,7 +10,11 @@ documentation = "https://ahq-softwares.github.io/win32_notif/"
 
 [package.metadata.docs.rs]
 all-features = true
-targets = ["x86_64-pc-windows-msvc", "i686-pc-windows-msvc"]
+targets = [
+  "x86_64-pc-windows-msvc",
+  "i686-pc-windows-msvc",
+  "aarch64-pc-windows-msvc",
+]
 
 [dependencies]
 windows = { version = "0.61", features = [
