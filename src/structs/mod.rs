@@ -10,7 +10,6 @@ pub use notification::{Notification, NotificationBuilder};
 pub use notifier::ToastsNotifier;
 use windows::{
   core::HSTRING,
-  Foundation::EventRegistrationToken,
   UI::Notifications::{
     NotificationMirroring as ToastNotificationMirroring, ToastNotification,
     ToastNotificationPriority,
@@ -151,35 +150,35 @@ impl<T: NotificationImpl> ManageNotification for T {
     &self,
     handler: NotificationActivatedEventHandler,
   ) -> Result<i64, NotifError> {
-    Ok(self.notif().Activated(&handler.handler)?.Value)
+    Ok(self.notif().Activated(&handler.handler)?)
   }
   fn remove_activated_handler(&self, token: i64) -> Result<(), NotifError> {
     Ok(
       self
         .notif()
-        .RemoveActivated(EventRegistrationToken { Value: token })?,
+        .RemoveActivated(token)?,
     )
   }
 
   fn set_dismissed_handler(&self, handler: NotificationDismissedEventHandler) -> Result<i64, NotifError> {
-    Ok(self.notif().Dismissed(&handler.handler)?.Value)
+    Ok(self.notif().Dismissed(&handler.handler)?)
   }
   fn remove_dismissed_handler(&self, token: i64) -> Result<(), NotifError> {
     Ok(
       self
         .notif()
-        .RemoveDismissed(EventRegistrationToken { Value: token })?,
+        .RemoveDismissed(token)?,
     )
   }
 
   fn set_failed_handler(&self, handler: NotificationFailedEventHandler) -> Result<i64, NotifError> {
-    Ok(self.notif().Failed(&handler.handler)?.Value)
+    Ok(self.notif().Failed(&handler.handler)?)
   }
   fn remove_failed_handler(&self, token: i64) -> Result<(), NotifError> {
     Ok(
       self
         .notif()
-        .RemoveFailed(EventRegistrationToken { Value: token })?,
+        .RemoveFailed(token)?,
     )
   }
 

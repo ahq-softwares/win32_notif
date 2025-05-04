@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use windows::{
-  core::{Error, IInspectable, Interface, HSTRING},
+  core::{Error, IInspectable, Interface, Ref, HSTRING},
   Foundation::{IReference, TypedEventHandler},
   UI::Notifications::{ToastActivatedEventArgs, ToastNotification},
 };
@@ -61,7 +61,7 @@ impl NotificationActivatedEventHandler {
     mut func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, IInspectable> = TypedEventHandler::new(
-      move |a: &Option<ToastNotification>, b: &Option<IInspectable>| {
+      move |a: Ref<ToastNotification>, b: Ref<IInspectable>| {
         let a = a.as_ref();
         let a = a.and_then(|a| PartialNotification { _toast: a }.into());
 

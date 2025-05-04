@@ -1,5 +1,5 @@
 use windows::{
-  core::{Error, Interface},
+  core::{Error, Interface, Ref},
   Foundation::TypedEventHandler,
   UI::Notifications::{ToastFailedEventArgs, ToastNotification},
 };
@@ -33,7 +33,7 @@ impl NotificationFailedEventHandler {
     mut func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, ToastFailedEventArgs> = TypedEventHandler::new(
-      move |a: &Option<ToastNotification>, b: &Option<ToastFailedEventArgs>| {
+      move |a: Ref<ToastNotification>, b: Ref<ToastFailedEventArgs>| {
         let a = a.as_ref();
         let a = a.and_then(|a| PartialNotification { _toast: a }.into());
 

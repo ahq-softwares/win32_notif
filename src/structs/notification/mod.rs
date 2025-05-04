@@ -289,15 +289,15 @@ impl NotificationBuilder {
     let toast = ToastNotification::CreateToastNotification(&doc)?;
     if let Some(x) = self.on_activated {
       let token = toast.Activated(&x.handler)?;
-      activated_event_handler_token = Some(token.Value);
+      activated_event_handler_token = Some(token);
     }
     if let Some(x) = self.on_dismissed {
       let token = toast.Dismissed(&x.handler)?;
-      dismissed_event_handler_token = Some(token.Value);
+      dismissed_event_handler_token = Some(token);
     }
     if let Some(x) = self.on_failed {
       let token = toast.Failed(&x.handler)?;
-      failed_event_handler_token = Some(token.Value);
+      failed_event_handler_token = Some(token);
     }
     toast.SetTag(&tag.into())?;
     toast.SetGroup(&group.into())?;
