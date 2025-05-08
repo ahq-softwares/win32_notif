@@ -39,7 +39,7 @@ checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
 
 [[package]]
 name = "win32_notif"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "windows",
 ]

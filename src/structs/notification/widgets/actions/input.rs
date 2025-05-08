@@ -62,7 +62,7 @@ impl ToXML for Input {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <input id="{}" title="{}" placeHolderContent="{}" type="{}" >
+        <input id={:#?} title={:#?} placeHolderContent={:#?} type={:#?} >
           {}
         </input>
       "#,
@@ -81,7 +81,7 @@ pub struct Selection {
 impl ToXML for Selection {
   fn to_xml(&self) -> String {
     format!(
-      r#"<selection id="{}" content="{}" />"#,
+      r#"<selection id={:#?} content={:#?} />"#,
       &self.id, &self.content
     )
   }

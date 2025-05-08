@@ -33,9 +33,9 @@ impl Command {
     Self {
       id: id.map_or_else(
         || "".into(),
-        |x| format!("id=\"{}\"", Into::<String>::into(x)),
+        |x| format!("id={:#?}", Into::<String>::into(x)),
       ),
-      arguments: arguments.map_or_else(|| "".into(), |x| format!("arguments=\"{}\"", x)),
+      arguments: arguments.map_or_else(|| "".into(), |x| format!("arguments={:#?}", x)),
     }
   }
 }

@@ -53,7 +53,7 @@ impl ToXML for Text {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <text id="{}" {} {}>
+        <text id={:#?} {} {}>
           {body}
         </text>
       "#,

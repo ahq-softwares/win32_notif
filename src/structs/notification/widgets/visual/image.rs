@@ -60,14 +60,14 @@ impl ToXML for Image {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <image id="{id}" src="{src}" {alt} addImageQuery="{add_image_query}" {placement} {crop} />
+        <image id={id:#?} src={src:?} {alt} addImageQuery={add_image_query:#?} {placement} {crop} />
       "#,
       id = self.id,
       src = &self.src,
       alt = self
         .alt
         .clone()
-        .map_or_else(|| string!(""), |x| format!("alt=\"{x}\"")),
+        .map_or_else(|| string!(""), |x| format!("alt={x:#?}")),
       add_image_query = self.add_image_query,
       placement = self.placement.to_string(),
       crop = if self.crop_circle {

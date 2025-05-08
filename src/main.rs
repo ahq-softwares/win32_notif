@@ -45,6 +45,8 @@ fn main() {
       let _notif = a.unwrap();
       let _args = b.unwrap();
 
+      println!("{:#?}", _args);
+
       Ok(())
     }))
     .build(1, &notifier, "a", "ahq")

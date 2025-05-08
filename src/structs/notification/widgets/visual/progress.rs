@@ -69,7 +69,7 @@ impl ToXML for Progress {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <progress {} status="{}" value="{}" {} />
+        <progress {} status={:#?} value={:#?} {} />
       "#,
       self
         .title
