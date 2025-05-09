@@ -1,9 +1,12 @@
 use crate::notification::actions::ActionElement;
 use crate::notification::visual::VisualElement;
+use crate::notification::group::SubgroupXML;
 
 use crate::ToXML;
 
 use crate::notification::{ActionableXML, ToastVisualableXML};
+
+use super::visual::TextOrImageElement;
 
 pub struct RawXML {
   raw: String,
@@ -29,6 +32,10 @@ impl ActionableXML for RawXML {}
 impl VisualElement for RawXML {}
 
 impl ToastVisualableXML for RawXML {}
+
+impl SubgroupXML for RawXML {}
+
+impl TextOrImageElement for RawXML {}
 
 impl ToXML for RawXML {
   fn to_xml(&self) -> String {

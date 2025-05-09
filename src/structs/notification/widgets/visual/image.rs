@@ -1,6 +1,6 @@
 use crate::{notification::ToastVisualableXML, ToXML};
 
-use super::VisualElement;
+use super::{TextOrImageElement, VisualElement};
 
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-image#attributes>
@@ -32,6 +32,8 @@ pub struct Image {
   pub crop_circle: bool,
 }
 
+impl TextOrImageElement for Image {}
+
 impl Image {
   pub fn new(
     id: u64,
@@ -60,7 +62,7 @@ impl ToXML for Image {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <image id={id:#?} src={src:?} {alt} addImageQuery={add_image_query:#?} {placement} {crop} />
+        <image id="{id:#?}" src={src:?} {alt} addImageQuery={add_image_query:#?} {placement} {crop} />
       "#,
       id = self.id,
       src = &self.src,
@@ -68,7 +70,11 @@ impl ToXML for Image {
         .alt
         .clone()
         .map_or_else(|| string!(""), |x| format!("alt={x:#?}")),
-      add_image_query = self.add_image_query,
+      add_image_query = if self.add_image_query {
+        "True"
+      } else {
+        "False"
+      },
       placement = self.placement.to_string(),
       crop = if self.crop_circle {
         "hint-crop=\"circle\""

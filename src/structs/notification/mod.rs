@@ -272,6 +272,8 @@ impl NotificationBuilder {
       button_style = self.use_button_style
     );
 
+    println!("{}", _xml);
+
     let doc = XmlDocument::new()?;
     doc.LoadXml(&HSTRING::from(_xml))?;
 

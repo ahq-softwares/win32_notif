@@ -3,6 +3,7 @@ pub mod audio;
 pub mod commands;
 pub mod header;
 pub mod visual;
+pub mod group;
 
 #[cfg_attr(docsrs, doc(cfg(feature = "unsafe")))]
 #[cfg(feature = "unsafe")]
