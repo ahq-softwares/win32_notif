@@ -32,18 +32,19 @@ impl NotificationFailedEventHandler {
   >(
     mut func: T,
   ) -> Self {
-    let handler: TypedEventHandler<ToastNotification, ToastFailedEventArgs> = TypedEventHandler::new(
-      move |a: Ref<ToastNotification>, b: Ref<ToastFailedEventArgs>| {
-        let a = a.as_ref();
-        let a = a.and_then(|a| PartialNotification { _toast: a }.into());
+    let handler: TypedEventHandler<ToastNotification, ToastFailedEventArgs> =
+      TypedEventHandler::new(
+        move |a: Ref<ToastNotification>, b: Ref<ToastFailedEventArgs>| {
+          let a = a.as_ref();
+          let a = a.and_then(|a| PartialNotification { _toast: a }.into());
 
-        let b = b.as_ref();
-        let b = b.and_then(|x| x.cast::<ToastFailedEventArgs>().ok());
-        let b = b.and_then(|x| Some(ToastFailedArgs::new(x)));
+          let b = b.as_ref();
+          let b = b.and_then(|x| x.cast::<ToastFailedEventArgs>().ok());
+          let b = b.and_then(|x| Some(ToastFailedArgs::new(x)));
 
-        func(a, b)
-      },
-    );
+          func(a, b)
+        },
+      );
 
     Self { handler }
   }

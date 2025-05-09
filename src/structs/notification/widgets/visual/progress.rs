@@ -14,7 +14,7 @@ pub struct Progress {
 
 pub enum ProgressValue {
   Percentage(u8),
-  Indeterminate
+  Indeterminate,
 }
 
 impl ToString for ProgressValue {

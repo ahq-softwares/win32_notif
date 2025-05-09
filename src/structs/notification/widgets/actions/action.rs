@@ -30,7 +30,7 @@ impl ActionButton {
       "".into(),
       HintButtonStyle::None,
       "".into(),
-      false
+      false,
     )
   }
 

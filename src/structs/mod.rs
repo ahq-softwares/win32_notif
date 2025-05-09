@@ -4,7 +4,10 @@ pub mod notification;
 pub mod notifier;
 
 pub use data::NotificationDataSet;
-pub use handler::{NotificationActivatedEventHandler, NotificationDismissedEventHandler, NotificationFailedEventHandler};
+pub use handler::{
+  NotificationActivatedEventHandler, NotificationDismissedEventHandler,
+  NotificationFailedEventHandler,
+};
 
 pub use notification::{Notification, NotificationBuilder};
 pub use notifier::ToastsNotifier;
@@ -77,7 +80,10 @@ pub trait ManageNotification {
   ) -> Result<i64, NotifError>;
   fn remove_activated_handler(&self, token: i64) -> Result<(), NotifError>;
 
-  fn set_dismissed_handler(&self, handler: NotificationDismissedEventHandler) -> Result<i64, NotifError>;
+  fn set_dismissed_handler(
+    &self,
+    handler: NotificationDismissedEventHandler,
+  ) -> Result<i64, NotifError>;
   fn remove_dismissed_handler(&self, token: i64) -> Result<(), NotifError>;
 
   fn set_failed_handler(&self, handler: NotificationFailedEventHandler) -> Result<i64, NotifError>;
@@ -153,33 +159,24 @@ impl<T: NotificationImpl> ManageNotification for T {
     Ok(self.notif().Activated(&handler.handler)?)
   }
   fn remove_activated_handler(&self, token: i64) -> Result<(), NotifError> {
-    Ok(
-      self
-        .notif()
-        .RemoveActivated(token)?,
-    )
+    Ok(self.notif().RemoveActivated(token)?)
   }
 
-  fn set_dismissed_handler(&self, handler: NotificationDismissedEventHandler) -> Result<i64, NotifError> {
+  fn set_dismissed_handler(
+    &self,
+    handler: NotificationDismissedEventHandler,
+  ) -> Result<i64, NotifError> {
     Ok(self.notif().Dismissed(&handler.handler)?)
   }
   fn remove_dismissed_handler(&self, token: i64) -> Result<(), NotifError> {
-    Ok(
-      self
-        .notif()
-        .RemoveDismissed(token)?,
-    )
+    Ok(self.notif().RemoveDismissed(token)?)
   }
 
   fn set_failed_handler(&self, handler: NotificationFailedEventHandler) -> Result<i64, NotifError> {
     Ok(self.notif().Failed(&handler.handler)?)
   }
   fn remove_failed_handler(&self, token: i64) -> Result<(), NotifError> {
-    Ok(
-      self
-        .notif()
-        .RemoveFailed(token)?,
-    )
+    Ok(self.notif().RemoveFailed(token)?)
   }
 
   implement! {

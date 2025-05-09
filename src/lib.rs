@@ -4,7 +4,7 @@
 //! Win32 Notification
 //!
 //! This library implements UWP XML Toast Notification
-//! This is a safe wrapper around the official C++ win32 apis
+//! This is a safe wrapper around the official WinRT apis
 //!
 //! # Example
 //! ```rust

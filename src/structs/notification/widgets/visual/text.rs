@@ -7,14 +7,25 @@ pub struct AttributionPlacement;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum HintStyle {
-  Base,
-  Title,
-  Subtitle,
-  CaptionSubtle,
-  Bold,
-  Italic,
   #[default]
-  None
+  Default,
+  Caption,
+  CaptionSubtle,
+  Body,
+  BodySubtle,
+  Base,
+  BaseSubtle,
+  Subtitle,
+  SubtitleSubtle,
+  Title,
+  TitleSubtle,
+  TitleNumeral,
+  Subheader,
+  SubheaderSubtle,
+  SubheaderNumeral,
+  Header,
+  HeaderSubtle,
+  HeaderNumeral,
 }
 
 impl ToString for HintStyle {
@@ -24,9 +35,20 @@ impl ToString for HintStyle {
       HintStyle::Title => r#"hint-style="title""#.to_string(),
       HintStyle::Subtitle => r#"hint-style="subtitle""#.to_string(),
       HintStyle::CaptionSubtle => r#"hint-style="captionSubtle""#.to_string(),
-      HintStyle::Bold => r#"hint-style="bold""#.to_string(),
-      HintStyle::Italic => r#"hint-style="italic""#.to_string(),
-      HintStyle::None => "".to_string(),
+      HintStyle::BaseSubtle => r#"hint-style="baseSubtle""#.to_string(),
+      HintStyle::TitleSubtle => r#"hint-style="titleSubtle""#.to_string(),
+      HintStyle::SubtitleSubtle => r#"hint-style="subtitleSubtle""#.to_string(),
+      HintStyle::Caption => r#"hint-style="caption""#.to_string(),
+      HintStyle::Body => r#"hint-style="body""#.to_string(),
+      HintStyle::BodySubtle => r#"hint-style="bodySubtle""#.to_string(),
+      HintStyle::Subheader => r#"hint-style="subheader""#.to_string(),
+      HintStyle::SubheaderSubtle => r#"hint-style="subheaderSubtle""#.to_string(),
+      HintStyle::SubheaderNumeral => r#"hint-style="subheaderNumeral""#.to_string(),
+      HintStyle::Header => r#"hint-style="header""#.to_string(),
+      HintStyle::HeaderSubtle => r#"hint-style="headerSubtle""#.to_string(),
+      HintStyle::HeaderNumeral => r#"hint-style="headerNumeral""#.to_string(),
+      HintStyle::Default => "".to_string(),
+      HintStyle::TitleNumeral => "hint-style=\"titleNumeral\"".to_string(),
     }
   }
 }
@@ -34,15 +56,21 @@ impl ToString for HintStyle {
 #[derive(Debug, Clone, Copy, Default)]
 pub enum HintAlign {
   Right,
+  Auto,
+  Left,
+  Center,
   #[default]
-  None
+  Default,
 }
 
 impl ToString for HintAlign {
   fn to_string(&self) -> String {
     match self {
       HintAlign::Right => r#"hint-align="right""#.to_string(),
-      HintAlign::None => "".to_string(),
+      HintAlign::Auto => r#"hint-align="auto""#.to_string(),
+      HintAlign::Left => r#"hint-align="left""#.to_string(),
+      HintAlign::Center => r#"hint-align="center""#.to_string(),
+      HintAlign::Default => "".to_string(),
     }
   }
 }
@@ -59,6 +87,10 @@ pub struct Text {
   pub style: HintStyle,
   pub align: HintAlign,
   pub body: String,
+  pub wrap: bool,
+  pub callScenarioCenterAlign: bool,
+  pub maxLines: u32,
+  pub minLines: u32,
 }
 
 impl TextOrImageElement for Text {}
@@ -88,6 +120,27 @@ impl Text {
     self
   }
 
+  /// Only for IncomingCall scenarios
+  pub fn align_center(mut self, center: bool) -> Self {
+    self.callScenarioCenterAlign = center;
+    self
+  }
+
+  pub fn wrap(mut self, wrap: bool) -> Self {
+    self.wrap = wrap;
+    self
+  }
+
+  pub fn max_lines(mut self, max_lines: u32) -> Self {
+    self.maxLines = max_lines;
+    self
+  }
+
+  pub fn min_lines(mut self, min_lines: u32) -> Self {
+    self.minLines = min_lines;
+    self
+  }
+
   pub fn new(
     id: u64,
     lang: Option<String>,
@@ -112,11 +165,27 @@ impl ToXML for Text {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <text id="{:#?}" {} {} {} {}>
+        <text id="{:#?}" {} {} {} {} {} {} {} {}>
           {body}
         </text>
       "#,
       self.id,
+      if self.wrap { "hint-wrap='true'" } else { "" },
+      if self.maxLines > 0 {
+        format!("hint-maxLines='{}'", self.maxLines)
+      } else {
+        "".to_string()
+      },
+      if self.minLines > 0 {
+        format!("hint-minLines='{}'", self.minLines)
+      } else {
+        "".to_string()
+      },
+      if self.callScenarioCenterAlign {
+        "hint-callScenarioCenterAlign='true'"
+      } else {
+        ""
+      },
       self.align.to_string(),
       self.style.to_string(),
       self

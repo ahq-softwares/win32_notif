@@ -1,6 +1,6 @@
 use crate::notification::actions::ActionElement;
-use crate::notification::visual::VisualElement;
 use crate::notification::group::SubgroupXML;
+use crate::notification::visual::VisualElement;
 
 use crate::ToXML;
 

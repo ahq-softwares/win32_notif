@@ -1,4 +1,7 @@
-use crate::{notification::{visual::VisualElement, ToastVisualableXML}, ToXML};
+use crate::{
+  notification::{visual::VisualElement, ToastVisualableXML},
+  ToXML,
+};
 
 use super::SubgroupXML;
 
@@ -28,23 +31,25 @@ impl Group {
 
 impl Default for Group {
   fn default() -> Self {
-    Self {
-      subgroups: vec![],
-    }
+    Self { subgroups: vec![] }
   }
 }
 
 impl ToXML for Group {
   fn to_xml(&self) -> String {
-    let data = self.subgroups.iter()
+    let data = self
+      .subgroups
+      .iter()
       .map(|x| x.to_xml())
       .collect::<Vec<_>>()
       .join("\n");
 
-    format!("
+    format!(
+      "
       <group>
         {data}
       </group>
-    ")
+    "
+    )
   }
 }

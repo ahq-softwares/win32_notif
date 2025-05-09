@@ -20,6 +20,46 @@ impl ToString for Placement {
   }
 }
 
+#[derive(Debug, Clone, Default)]
+pub enum ImageCrop {
+  #[default]
+  Default,
+  None,
+  Circle,
+}
+
+impl ToString for ImageCrop {
+  fn to_string(&self) -> String {
+    match self {
+      ImageCrop::Default => "".to_string(),
+      ImageCrop::Circle => "hint-crop=\"circle\"".to_string(),
+      ImageCrop::None => "hint-crop=\"none\"".to_string(),
+    }
+  }
+}
+
+#[derive(Debug, Clone, Default)]
+pub enum AdaptiveImageAlign {
+  #[default]
+  Default,
+  Stretch,
+  Left,
+  Center,
+  Right,
+}
+
+impl ToString for AdaptiveImageAlign {
+  fn to_string(&self) -> String {
+    match self {
+      AdaptiveImageAlign::Default => "".to_string(),
+      AdaptiveImageAlign::Stretch => "hint-align=\"stretch\"".to_string(),
+      AdaptiveImageAlign::Left => "hint-align=\"left\"".to_string(),
+      AdaptiveImageAlign::Center => "hint-align=\"center\"".to_string(),
+      AdaptiveImageAlign::Right => "hint-align=\"right\"".to_string(),
+    }
+  }
+}
+
 #[allow(non_snake_case)]
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-image>
@@ -29,7 +69,9 @@ pub struct Image {
   pub alt: Option<String>,
   pub add_image_query: bool,
   pub placement: Placement,
-  pub crop_circle: bool,
+  pub crop: ImageCrop,
+  pub no_margin: bool,
+  pub align: AdaptiveImageAlign,
 }
 
 impl TextOrImageElement for Image {}
@@ -41,7 +83,8 @@ impl Image {
     alt: Option<String>,
     add_image_query: bool,
     placement: Placement,
-    crop_circle: bool,
+    crop: ImageCrop,
+    no_margin: bool,
   ) -> Self {
     Self {
       id,
@@ -49,8 +92,47 @@ impl Image {
       src,
       alt,
       placement,
-      crop_circle,
+      crop,
+      align: AdaptiveImageAlign::Default,
+      no_margin,
     }
+  }
+}
+
+impl Image {
+  pub fn with_margin(mut self, margin: bool) -> Self {
+    self.no_margin = !margin;
+    self
+  }
+
+  pub fn with_align(mut self, align: AdaptiveImageAlign) -> Self {
+    self.align = align;
+    self
+  }
+
+  pub fn with_alt<S: Into<String>>(mut self, alt: S) -> Self {
+    self.alt = Some(alt.into());
+    self
+  }
+
+  pub fn without_image_query(mut self) -> Self {
+    self.add_image_query = false;
+    self
+  }
+
+  pub fn with_image_query(mut self) -> Self {
+    self.add_image_query = true;
+    self
+  }
+
+  pub fn with_crop(mut self, crop: ImageCrop) -> Self {
+    self.crop = crop;
+    self
+  }
+
+  pub fn with_placement(mut self, placement: Placement) -> Self {
+    self.placement = placement;
+    self
   }
 }
 
@@ -62,8 +144,13 @@ impl ToXML for Image {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <image id="{id:#?}" src={src:?} {alt} addImageQuery={add_image_query:#?} {placement} {crop} />
+        <image id="{id:#?}" {margin} {align} src={src:?} {alt} addImageQuery={add_image_query:#?} {placement} {crop} />
       "#,
+      align = self.align.to_string(),
+      margin = match self.no_margin {
+        true => "hint-remove-margin=\"true\"".to_string(),
+        false => "".to_string(),
+      },
       id = self.id,
       src = &self.src,
       alt = self
@@ -76,11 +163,7 @@ impl ToXML for Image {
         "False"
       },
       placement = self.placement.to_string(),
-      crop = if self.crop_circle {
-        "hint-crop=\"circle\""
-      } else {
-        ""
-      }
+      crop = self.crop.to_string()
     )
   }
 }

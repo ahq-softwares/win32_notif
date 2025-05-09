@@ -2,7 +2,10 @@ use std::collections::HashMap;
 
 use crate::NotifError;
 
-use super::{handler::{NotificationDismissedEventHandler, NotificationFailedEventHandler}, NotificationActivatedEventHandler, NotificationImpl, ToXML, ToastsNotifier};
+use super::{
+  handler::{NotificationDismissedEventHandler, NotificationFailedEventHandler},
+  NotificationActivatedEventHandler, NotificationImpl, ToXML, ToastsNotifier,
+};
 use actions::ActionElement;
 use audio::Audio;
 use header::Header;
@@ -271,9 +274,6 @@ impl NotificationBuilder {
       scenario = self.scenario,
       button_style = self.use_button_style
     );
-
-    #[cfg(feature = "xmlprint")]
-    println!("{}", _xml);
 
     let doc = XmlDocument::new()?;
     doc.LoadXml(&HSTRING::from(_xml))?;

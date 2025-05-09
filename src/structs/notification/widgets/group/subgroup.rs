@@ -27,23 +27,25 @@ impl SubGroup {
 
 impl Default for SubGroup {
   fn default() -> Self {
-    Self {
-      elements: vec![],
-    }
+    Self { elements: vec![] }
   }
 }
 
 impl ToXML for SubGroup {
   fn to_xml(&self) -> String {
-    let data = self.elements.iter()
+    let data = self
+      .elements
+      .iter()
       .map(|x| x.to_xml())
       .collect::<Vec<_>>()
       .join("\n");
 
-    format!("
+    format!(
+      "
       <subgroup>
         {data}
       </subgroup>
-    ")
+    "
+    )
   }
 }
