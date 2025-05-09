@@ -272,6 +272,7 @@ impl NotificationBuilder {
       button_style = self.use_button_style
     );
 
+    #[cfg(feature = "xmlprint")]
     println!("{}", _xml);
 
     let doc = XmlDocument::new()?;
