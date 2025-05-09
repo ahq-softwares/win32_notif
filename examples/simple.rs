@@ -1,12 +1,9 @@
-use std::{thread, time::Duration};
-
 use win32_notif::{
-  notification::{actions::{
-    action::{ActivationType, AfterActivationBehavior, HintButtonStyle},
-    input::{InputType, Selection},
-    ActionButton, Input,
-  }, group::{Group, SubGroup}, visual::{text::{HintAlign, HintStyle}, Text}},
-  string, NotificationActivatedEventHandler, NotificationBuilder, NotificationDataSet,
+  notification::{
+    group::{Group, SubGroup}, 
+    visual::{text::{HintAlign, HintStyle}, Text}
+  },
+  NotificationBuilder, 
   ToastsNotifier,
 };
 
