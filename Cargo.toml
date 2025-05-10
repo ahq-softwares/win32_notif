@@ -1,6 +1,6 @@
 [package]
 name = "win32_notif"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 description = "Wrapper around Windows UWP XAML (WinRT) Notification api"
 license = "MIT"
@@ -24,5 +24,6 @@ windows = { version = "0.61", features = [
 ] }
 
 [features]
-default = ["unsafe"]
+default = []
+# Enables unsafe functions
 unsafe = []

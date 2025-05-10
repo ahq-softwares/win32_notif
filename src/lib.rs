@@ -1,5 +1,6 @@
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![allow(private_bounds)]
 
 //! Win32 Notification
 //!
@@ -65,6 +66,42 @@ macro_rules! from_impl {
       }
     }
   };
+}
+
+pub(crate) mod macros {
+  #[macro_export]
+  macro_rules! mktrait {
+    (
+      trait $name:ident {
+        $($x:tt)*
+      }
+    ) => {
+      #[cfg(feature = "unsafe")]
+      pub trait $name {
+        $($x)*
+      }
+
+      #[cfg(not(feature = "unsafe"))]
+      pub(crate) trait $name {
+        $($x)*
+      }
+    };
+    (
+      trait $name:ident: $($trait:tt),+ {
+        $($x:tt)*
+      }
+    ) => {
+      #[cfg(feature = "unsafe")]
+      pub trait $name: $($trait)++ {
+        $($x)*
+      }
+
+      #[cfg(not(feature = "unsafe"))]
+      pub(crate) trait $name: $($trait)++ {
+        $($x)*
+      }
+    };
+  }
 }
 
 #[derive(Debug)]

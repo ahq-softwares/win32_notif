@@ -31,6 +31,12 @@ pub enum NotificationMirroring {
   Disallowed,
 }
 
+#[cfg(not(feature = "unsafe"))]
+pub(crate) trait ToXML {
+  fn to_xml(&self) -> String;
+}
+
+#[cfg(feature = "unsafe")]
 pub trait ToXML {
   fn to_xml(&self) -> String;
 }
