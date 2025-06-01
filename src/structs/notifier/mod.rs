@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use windows::{core::HSTRING, UI::Notifications::{
+use windows::UI::Notifications::{
   NotificationData, NotificationUpdateResult, ToastNotificationHistory, ToastNotificationManager, ToastNotifier
-}};
+};
 
 use crate::NotifError;
 
