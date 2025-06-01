@@ -183,8 +183,8 @@ impl Into<String> for HintButtonStyle {
   fn into(self) -> String {
     match self {
       Self::None => "".to_string(),
-      Self::Success => "success".to_string(),
-      Self::Critical => "critical".to_string(),
+      Self::Success => "Success".to_string(),
+      Self::Critical => "Critical".to_string(),
     }
   }
 }

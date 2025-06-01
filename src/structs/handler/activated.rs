@@ -61,7 +61,7 @@ impl NotificationActivatedEventHandler {
     mut func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, IInspectable> =
-      TypedEventHandler::new(move |a: Ref<ToastNotification>, b: Ref<IInspectable>| {
+       TypedEventHandler::new(move |a: Ref<ToastNotification>, b: Ref<IInspectable>| {
         let a = a.as_ref();
         let a = a.and_then(|a| PartialNotification { _toast: a }.into());
 
