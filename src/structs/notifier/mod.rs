@@ -10,13 +10,13 @@ use super::NotificationDataSet;
 
 pub struct ToastsNotifier {
   _inner: ToastNotifier,
-  app_id: Arc<str>
+  app_id: Arc<String>
 }
 
 impl ToastsNotifier {
   pub fn new<T: Into<String>>(app_id: T) -> Result<Self, NotifError> {
     let string: String = app_id.into();
-    let _inner = ToastNotificationManager::CreateToastNotifierWithId(&string.into())?;
+    let _inner = ToastNotificationManager::CreateToastNotifierWithId(&string.clone().into())?;
 
     Ok(Self { _inner, app_id: Arc::new(string) })
   }
@@ -46,6 +46,8 @@ impl ToastsNotifier {
     &self._inner
   }
 }
+
+pub type SafeString = String;
 
 #[derive(Debug, Clone)]
 pub struct ToastsManager {

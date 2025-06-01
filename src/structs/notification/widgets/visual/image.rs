@@ -113,7 +113,7 @@ impl Image {
     Self {
       id,
       add_image_query,
-      src,
+      src: guess_src(src),
       alt,
       placement,
       crop,
