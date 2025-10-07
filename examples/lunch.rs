@@ -41,9 +41,8 @@ fn main() {
         .set_id("no")
     )
     .set_duration(ToastDuration::Long)
-    .on_activated(NotificationActivatedEventHandler::new(|a, b| {
+    .on_activated(NotificationActivatedEventHandler::new(|_a, b| {
       println!("Triggered");
-      let notification = a.unwrap();
       let args = b.unwrap();
 
       println!("{args:?}");

@@ -1,4 +1,5 @@
 #![feature(prelude_import)]
+#![allow(private_bounds)]
 //! Win32 Notification
 //!
 //! This library implements UWP XML Toast Notification
@@ -27,10 +28,10 @@
 //!   loop {}
 //! }
 //! ```
-#[prelude_import]
-use std::prelude::rust_2021::*;
 #[macro_use]
 extern crate std;
+#[prelude_import]
+use std::prelude::rust_2021::*;
 mod structs {
     pub mod data {
         use windows::UI::Notifications::NotificationData;
@@ -117,11 +118,11 @@ mod structs {
             }
             impl NotificationActivatedEventHandler {
                 pub fn new<
-                    T: FnMut(
+                    T: Fn(
                             Option<PartialNotification>,
                             Option<ToastActivatedArgs>,
                         ) -> Result<(), Error> + Send + Sync + 'static,
-                >(mut func: T) -> Self {
+                >(func: T) -> Self {
                     let handler: TypedEventHandler<ToastNotification, IInspectable> = TypedEventHandler::new(move |
                         a: Ref<ToastNotification>,
                         b: Ref<IInspectable>|
@@ -192,10 +193,7 @@ mod structs {
                                 } else {
                                     Self::Unknown(
                                         ::alloc::__export::must_use({
-                                            let res = ::alloc::fmt::format(
-                                                format_args!("Unknown reason: {0}", x),
-                                            );
-                                            res
+                                            ::alloc::fmt::format(format_args!("Unknown reason: {0}", x))
                                         }),
                                     )
                                 }
@@ -211,11 +209,11 @@ mod structs {
             }
             impl NotificationDismissedEventHandler {
                 pub fn new<
-                    T: FnMut(
+                    T: Fn(
                             Option<PartialNotification>,
                             Option<ToastDismissedReason>,
                         ) -> Result<(), Error> + Send + Sync + 'static,
-                >(mut func: T) -> Self {
+                >(func: T) -> Self {
                     let handler: TypedEventHandler<
                         ToastNotification,
                         ToastDismissedEventArgs,
@@ -271,11 +269,11 @@ mod structs {
             }
             impl NotificationFailedEventHandler {
                 pub fn new<
-                    T: FnMut(
+                    T: Fn(
                             Option<PartialNotification>,
                             Option<ToastFailedArgs>,
                         ) -> Result<(), Error> + Send + Sync + 'static,
-                >(mut func: T) -> Self {
+                >(func: T) -> Self {
                     let handler: TypedEventHandler<
                         ToastNotification,
                         ToastFailedEventArgs,
@@ -425,7 +423,7 @@ mod structs {
                     impl ToXML for ActionButton {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n          <action content={0:#?} arguments={1:#?} activationType={2:#?} afterActivationBehavior={3:#?} imageUri={4:#?} hint-inputId={5:#?} hint-buttonStyle={6:#?} hint-toolTip={7:#?} {8} />\n        ",
                                         self.content,
@@ -442,8 +440,7 @@ mod structs {
                                             ""
                                         },
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -512,8 +509,8 @@ mod structs {
                         fn into(self) -> String {
                             match self {
                                 Self::None => "".to_string(),
-                                Self::Success => "success".to_string(),
-                                Self::Critical => "critical".to_string(),
+                                Self::Success => "Success".to_string(),
+                                Self::Critical => "Critical".to_string(),
                             }
                         }
                     }
@@ -608,7 +605,7 @@ mod structs {
                     impl ToXML for Input {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n        <input id={0:#?} title={1:#?} placeHolderContent={2:#?} type={3:#?} >\n          {4}\n        </input>\n      ",
                                         self.id,
@@ -617,8 +614,7 @@ mod structs {
                                         self.r#type,
                                         self.children,
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -631,14 +627,13 @@ mod structs {
                     impl ToXML for Selection {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "<selection id={0:#?} content={1:#?} />",
                                         &self.id,
                                         &self.content,
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -669,15 +664,14 @@ mod structs {
                 impl ToXML for Audio {
                     fn to_xml(&self) -> String {
                         ::alloc::__export::must_use({
-                            let res = ::alloc::fmt::format(
+                            ::alloc::fmt::format(
                                 format_args!(
                                     "\n        <audio src={0:#?} loop={1:#?} silent={2:#?} />\n      ",
                                     self.src,
                                     self.r#loop,
                                     self.silent,
                                 ),
-                            );
-                            res
+                            )
                         })
                     }
                 }
@@ -806,20 +800,16 @@ mod structs {
                                 .map_or_else(
                                     || "".into(),
                                     |x| ::alloc::__export::must_use({
-                                        let res = ::alloc::fmt::format(
+                                        ::alloc::fmt::format(
                                             format_args!("id={0:#?}", Into::<String>::into(x)),
-                                        );
-                                        res
+                                        )
                                     }),
                                 ),
                             arguments: arguments
                                 .map_or_else(
                                     || "".into(),
                                     |x| ::alloc::__export::must_use({
-                                        let res = ::alloc::fmt::format(
-                                            format_args!("arguments={0:#?}", x),
-                                        );
-                                        res
+                                        ::alloc::fmt::format(format_args!("arguments={0:#?}", x))
                                     }),
                                 ),
                         }
@@ -846,14 +836,13 @@ mod structs {
                 impl ToXML for Command {
                     fn to_xml(&self) -> String {
                         ::alloc::__export::must_use({
-                            let res = ::alloc::fmt::format(
+                            ::alloc::fmt::format(
                                 format_args!(
                                     "\n        <command {0} {1} />\n      ",
                                     self.arguments,
                                     self.id,
                                 ),
-                            );
-                            res
+                            )
                         })
                     }
                 }
@@ -903,13 +892,12 @@ mod structs {
                                 .collect::<Vec<_>>()
                                 .join("\n");
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n      <group>\n        {0}\n      </group>\n    ",
                                         data,
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -956,13 +944,12 @@ mod structs {
                                 .collect::<Vec<_>>()
                                 .join("\n");
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n      <subgroup>\n        {0}\n      </subgroup>\n    ",
                                         data,
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -1000,7 +987,7 @@ mod structs {
                 impl ToXML for Header {
                     fn to_xml(&self) -> String {
                         ::alloc::__export::must_use({
-                            let res = ::alloc::fmt::format(
+                            ::alloc::fmt::format(
                                 format_args!(
                                     "\n      <header title={0:#?} arguments={1:#?} id={2:#?} activationType={3:#?} />\n    ",
                                     self.title,
@@ -1008,8 +995,7 @@ mod structs {
                                     self.id,
                                     self.activation_type,
                                 ),
-                            );
-                            res
+                            )
                         })
                     }
                 }
@@ -1188,7 +1174,43 @@ mod structs {
                         pub align: AdaptiveImageAlign,
                     }
                     impl TextOrImageElement for Image {}
+                    fn guess_src(src: String) -> String {
+                        let protocols = [
+                            "https://",
+                            "http://",
+                            "file:///",
+                            "ms-appx:///",
+                            "ms-appdata:///local/",
+                        ];
+                        if !(protocols.iter().any(|x| src.starts_with(x))) {
+                            return ::alloc::__export::must_use({
+                                ::alloc::fmt::format(format_args!("file:///{0}", src))
+                            });
+                        }
+                        src
+                    }
                     impl Image {
+                        /// The `src` should be the either of the following following
+                        /// - `https://url or http://url`
+                        /// - `file:///path/to/file`
+                        ///
+                        /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
+                        pub fn create<T: Into<String>>(id: u64, src: T) -> Self {
+                            Self::new(
+                                id,
+                                src.into(),
+                                None,
+                                false,
+                                Placement::None,
+                                ImageCrop::Default,
+                                false,
+                            )
+                        }
+                        /// The `src` should be the either of the following following
+                        /// - `https://url or http://url`
+                        /// - `file:///path/to/file`
+                        ///
+                        /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
                         pub fn new(
                             id: u64,
                             src: String,
@@ -1201,7 +1223,7 @@ mod structs {
                             Self {
                                 id,
                                 add_image_query,
-                                src,
+                                src: guess_src(src),
                                 alt,
                                 placement,
                                 crop,
@@ -1245,37 +1267,39 @@ mod structs {
                     impl ToXML for Image {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
-                                        "\n        <image id=\"{2:#?}\" {1} {0} src={3:?} {4} addImageQuery={5:#?} {6} {7} />\n      ",
+                                        "\n        <image id=\"{2:#?}\" {1} {0} src={3} {5} {4} {6} {7} />\n      ",
                                         self.align.to_string(),
                                         match self.no_margin {
                                             true => "hint-remove-margin=\"true\"".to_string(),
                                             false => "".to_string(),
                                         },
                                         self.id,
-                                        &self.src,
+                                        ::alloc::__export::must_use({
+                                                ::alloc::fmt::format(format_args!("{0:?}", self.src))
+                                            })
+                                            .replace("\\\\", "\\"),
                                         self
                                             .alt
                                             .clone()
                                             .map_or_else(
                                                 || ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(format_args!(""));
-                                                    res
+                                                    ::alloc::fmt::format(format_args!(""))
                                                 }),
                                                 |x| ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(
-                                                        format_args!("alt={0:#?}", x),
-                                                    );
-                                                    res
+                                                    ::alloc::fmt::format(format_args!("alt={0:#?}", x))
                                                 }),
                                             ),
-                                        if self.add_image_query { "True" } else { "False" },
+                                        if self.add_image_query {
+                                            "addImageQuery=\"True\""
+                                        } else {
+                                            ""
+                                        },
                                         self.placement.to_string(),
                                         self.crop.to_string(),
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -1301,10 +1325,7 @@ mod structs {
                             match self {
                                 ProgressValue::Percentage(x) => {
                                     ::alloc::__export::must_use({
-                                        let res = ::alloc::fmt::format(
-                                            format_args!("{0}", x / 100),
-                                        );
-                                        res
+                                        ::alloc::fmt::format(format_args!("{0}", x / 100))
                                     })
                                 }
                                 ProgressValue::Indeterminate => "indeterminate".to_string(),
@@ -1346,7 +1367,7 @@ mod structs {
                     impl ToXML for Progress {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n        <progress {0} status={1:#?} value={2:#?} {3} />\n      ",
                                         self
@@ -1354,14 +1375,10 @@ mod structs {
                                             .clone()
                                             .map_or_else(
                                                 || ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(format_args!(""));
-                                                    res
+                                                    ::alloc::fmt::format(format_args!(""))
                                                 }),
                                                 |x| ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(
-                                                        format_args!("title=\"{0}\"", x),
-                                                    );
-                                                    res
+                                                    ::alloc::fmt::format(format_args!("title=\"{0}\"", x))
                                                 }),
                                             ),
                                         self.status,
@@ -1371,19 +1388,16 @@ mod structs {
                                             .clone()
                                             .map_or_else(
                                                 || ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(format_args!(""));
-                                                    res
+                                                    ::alloc::fmt::format(format_args!(""))
                                                 }),
                                                 |x| ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(
+                                                    ::alloc::fmt::format(
                                                         format_args!("valueStringOverride=\"{0}\"", x),
-                                                    );
-                                                    res
+                                                    )
                                                 }),
                                             ),
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -1677,27 +1691,25 @@ mod structs {
                     impl ToXML for Text {
                         fn to_xml(&self) -> String {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n        <text id=\"{0:#?}\" {1} {2} {3} {4} {5} {6} {7} {8}>\n          {9}\n        </text>\n      ",
                                         self.id,
                                         if self.wrap { "hint-wrap='true'" } else { "" },
                                         if self.maxLines > 0 {
                                             ::alloc::__export::must_use({
-                                                let res = ::alloc::fmt::format(
+                                                ::alloc::fmt::format(
                                                     format_args!("hint-maxLines=\'{0}\'", self.maxLines),
-                                                );
-                                                res
+                                                )
                                             })
                                         } else {
                                             "".to_string()
                                         },
                                         if self.minLines > 0 {
                                             ::alloc::__export::must_use({
-                                                let res = ::alloc::fmt::format(
+                                                ::alloc::fmt::format(
                                                     format_args!("hint-minLines=\'{0}\'", self.minLines),
-                                                );
-                                                res
+                                                )
                                             })
                                         } else {
                                             "".to_string()
@@ -1714,14 +1726,10 @@ mod structs {
                                             .clone()
                                             .map_or_else(
                                                 || ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(format_args!(""));
-                                                    res
+                                                    ::alloc::fmt::format(format_args!(""))
                                                 }),
                                                 |x| ::alloc::__export::must_use({
-                                                    let res = ::alloc::fmt::format(
-                                                        format_args!("lang=\"{0}\"", x),
-                                                    );
-                                                    res
+                                                    ::alloc::fmt::format(format_args!("lang=\"{0}\"", x))
                                                 }),
                                             ),
                                         self
@@ -1729,8 +1737,7 @@ mod structs {
                                             .map_or_else(|| "", |_| "placement=\"attribution\""),
                                         self.body,
                                     ),
-                                );
-                                res
+                                )
                             })
                         }
                     }
@@ -1744,6 +1751,21 @@ mod structs {
             }
         }
         pub use widgets::*;
+        /// This is a partial version of notification
+        /// You can convert it to a Notification **but it will lost the handler tokens**
+        ///
+        /// We have to call [`OwnedPartialNotification::get_partial`] to get the PartialNotification object
+        /// to work on it
+        pub struct OwnedPartialNotification {
+            pub(crate) notif: ToastNotification,
+        }
+        impl OwnedPartialNotification {
+            pub fn get_partial<'a>(&'a self) -> PartialNotification<'a> {
+                PartialNotification {
+                    _toast: &self.notif,
+                }
+            }
+        }
         /// This is a partial version of notification
         /// You can convert it to a Notification **but it will lost the handler tokens**
         pub struct PartialNotification<'a> {
@@ -1948,7 +1970,7 @@ mod structs {
                         || "".into(),
                         |x| {
                             ::alloc::__export::must_use({
-                                let res = ::alloc::fmt::format(
+                                ::alloc::fmt::format(
                                     format_args!(
                                         "\n        <commands>\n          {0}\n        </commands>\n      ",
                                         x
@@ -1957,13 +1979,12 @@ mod structs {
                                             .collect::<Vec<_>>()
                                             .join("\n".into()),
                                     ),
-                                );
-                                res
+                                )
                             })
                         },
                     );
                 let _xml = ::alloc::__export::must_use({
-                    let res = ::alloc::fmt::format(
+                    ::alloc::fmt::format(
                         format_args!(
                             "\n      <toast {0} {1} {2}>\n        {3}\n        {4}\n        {5}\n        <visual>\n          <binding template=\'ToastGeneric\'>\n            {6}\n          </binding>\n        </visual>\n        <actions>\n          {7}\n        </actions>\n      </toast>\n    ",
                             self.duration,
@@ -1975,8 +1996,7 @@ mod structs {
                             visual,
                             actions,
                         ),
-                    );
-                    res
+                    )
                 });
                 let doc = XmlDocument::new()?;
                 doc.LoadXml(&HSTRING::from(_xml))?;
@@ -2015,21 +2035,36 @@ mod structs {
         }
     }
     pub mod notifier {
-        use windows::UI::Notifications::{
-            NotificationData, NotificationUpdateResult, ToastNotificationManager,
-            ToastNotifier,
+        use std::sync::Arc;
+        use windows::{
+            core::HSTRING,
+            UI::Notifications::{
+                NotificationData, NotificationUpdateResult, ToastNotificationHistory,
+                ToastNotificationManager, ToastNotifier,
+            },
         };
-        use crate::NotifError;
+        use crate::{NotifError, notification::OwnedPartialNotification};
         use super::NotificationDataSet;
         pub struct ToastsNotifier {
             _inner: ToastNotifier,
+            app_id: Arc<Box<str>>,
         }
         impl ToastsNotifier {
-            pub fn new(app_id: &str) -> Result<Self, NotifError> {
-                let _inner = ToastNotificationManager::CreateToastNotifierWithId(
-                    &app_id.into(),
-                )?;
-                Ok(Self { _inner })
+            pub fn new<T: Into<String>>(app_id: T) -> Result<Self, NotifError> {
+                let string: String = app_id.into();
+                let string = string.into_boxed_str();
+                let id = HSTRING::from(string.as_ref());
+                let _inner = ToastNotificationManager::CreateToastNotifierWithId(&id)?;
+                Ok(Self {
+                    _inner,
+                    app_id: Arc::new(string),
+                })
+            }
+            pub fn manager(&self) -> Result<ToastsManager, NotifError> {
+                Ok(ToastsManager {
+                    inner: (ToastNotificationManager::History()?),
+                    app_id: self.app_id.clone(),
+                })
             }
             pub fn update(
                 &self,
@@ -2042,6 +2077,130 @@ mod structs {
             }
             pub fn get_raw_handle(&self) -> &ToastNotifier {
                 &self._inner
+            }
+        }
+        pub struct ToastsManager {
+            pub(crate) inner: ToastNotificationHistory,
+            pub app_id: Arc<Box<str>>,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ToastsManager {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "ToastsManager",
+                    "inner",
+                    &self.inner,
+                    "app_id",
+                    &&self.app_id,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ToastsManager {
+            #[inline]
+            fn clone(&self) -> ToastsManager {
+                ToastsManager {
+                    inner: ::core::clone::Clone::clone(&self.inner),
+                    app_id: ::core::clone::Clone::clone(&self.app_id),
+                }
+            }
+        }
+        impl ToastsManager {
+            /// Clear all notifications from this application
+            pub fn clear(&self) -> Result<(), NotifError> {
+                Ok(self.inner.Clear()?)
+            }
+            /// Clears all notifications sent by another app
+            /// from the same app package
+            ///
+            /// ## WARNING
+            /// This is probably not meant for Win32 Apps but we're not sure
+            pub fn clear_appid(&self, app_id: &str) -> Result<(), NotifError> {
+                let hstr = HSTRING::from(app_id);
+                Ok(self.inner.ClearWithId(&hstr)?)
+            }
+            /// Removes a notification identified by tag, group, notif_id
+            pub fn remove_notification(
+                &self,
+                tag: &str,
+                group: &str,
+                notif_id: &str,
+            ) -> Result<(), NotifError> {
+                let hstr = HSTRING::from(tag);
+                let group = HSTRING::from(group);
+                let id = HSTRING::from(notif_id);
+                Ok(self.inner.RemoveGroupedTagWithId(&hstr, &group, &id)?)
+            }
+            /// Removes a notification identified by tag, group
+            pub fn remove_notification_with_gt(
+                &self,
+                tag: &str,
+                group: &str,
+            ) -> Result<(), NotifError> {
+                let hstr = HSTRING::from(tag);
+                let group = HSTRING::from(group);
+                Ok(self.inner.RemoveGroupedTag(&hstr, &group)?)
+            }
+            /// Removes a notification identified by tag only
+            pub fn remove_notification_with_tag(
+                &self,
+                tag: &str,
+            ) -> Result<(), NotifError> {
+                let hstr = HSTRING::from(tag);
+                Ok(self.inner.Remove(&hstr)?)
+            }
+            /// Removes a group of notifications identified by the group id
+            pub fn remove_group(&self, group: &str) -> Result<(), NotifError> {
+                let hstr = HSTRING::from(group);
+                Ok(self.inner.RemoveGroup(&hstr)?)
+            }
+            /// Removes a group of notifications identified by the group id for **another app**
+            /// from the same app package
+            ///
+            /// ## WARNING
+            /// This is probably not meant for Win32 Apps but we're not sure
+            pub fn remove_group_from_appid(
+                &self,
+                group: &str,
+                app_id: &str,
+            ) -> Result<(), NotifError> {
+                let app_id = HSTRING::from(app_id);
+                let hstr = HSTRING::from(group);
+                Ok(self.inner.RemoveGroupWithId(&hstr, &app_id)?)
+            }
+            /// Gets notification history as PartialNotification objects
+            pub fn get_notification_history(
+                &self,
+            ) -> Result<Vec<OwnedPartialNotification>, NotifError> {
+                let data = self.inner.GetHistory()?;
+                let da = data
+                    .into_iter()
+                    .map(|x| OwnedPartialNotification {
+                        notif: x,
+                    })
+                    .collect::<Vec<_>>();
+                Ok(da)
+            }
+            /// Gets notification history as PartialNotification objects for **another app**
+            /// from the same app package
+            ///
+            /// ## WARNING
+            /// This is probably not meant for Win32 Apps but we're not sure
+            pub fn get_notification_history_with_id(
+                &self,
+                app_id: &str,
+            ) -> Result<Vec<OwnedPartialNotification>, NotifError> {
+                let appid = HSTRING::from(app_id);
+                let data = self.inner.GetHistoryWithId(&appid)?;
+                let da = data
+                    .into_iter()
+                    .map(|x| OwnedPartialNotification {
+                        notif: x,
+                    })
+                    .collect::<Vec<_>>();
+                Ok(da)
             }
         }
     }
