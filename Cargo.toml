@@ -1,6 +1,6 @@
 [package]
 name = "win32_notif"
-version = "0.7.3"
+version = "0.7.4"
 edition = "2021"
 description = "Wrapper around Windows UWP XAML (WinRT) Notification api"
 license = "MIT"
@@ -16,7 +16,7 @@ targets = [
 ]
 
 [dependencies]
-windows = { version = "0.61", features = [
+windows = { version = "0.62", features = [
   "Win32_UI_Notifications",
   "Data_Xml_Dom",
   "UI_Notifications",

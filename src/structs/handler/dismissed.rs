@@ -41,12 +41,12 @@ pub struct NotificationDismissedEventHandler {
 
 impl NotificationDismissedEventHandler {
   pub fn new<
-    T: FnMut(Option<PartialNotification>, Option<ToastDismissedReason>) -> Result<(), Error>
+    T: Fn(Option<PartialNotification>, Option<ToastDismissedReason>) -> Result<(), Error>
       + Send
       + Sync
       + 'static,
   >(
-    mut func: T,
+    func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, ToastDismissedEventArgs> =
       TypedEventHandler::new(

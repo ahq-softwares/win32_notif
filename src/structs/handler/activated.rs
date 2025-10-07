@@ -53,12 +53,12 @@ pub struct NotificationActivatedEventHandler {
 
 impl NotificationActivatedEventHandler {
   pub fn new<
-    T: FnMut(Option<PartialNotification>, Option<ToastActivatedArgs>) -> Result<(), Error>
+    T: Fn(Option<PartialNotification>, Option<ToastActivatedArgs>) -> Result<(), Error>
       + Send
       + Sync
       + 'static,
   >(
-    mut func: T,
+    func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, IInspectable> =
        TypedEventHandler::new(move |a: Ref<ToastNotification>, b: Ref<IInspectable>| {

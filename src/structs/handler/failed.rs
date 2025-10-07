@@ -25,12 +25,12 @@ pub struct NotificationFailedEventHandler {
 
 impl NotificationFailedEventHandler {
   pub fn new<
-    T: FnMut(Option<PartialNotification>, Option<ToastFailedArgs>) -> Result<(), Error>
+    T: Fn(Option<PartialNotification>, Option<ToastFailedArgs>) -> Result<(), Error>
       + Send
       + Sync
       + 'static,
   >(
-    mut func: T,
+    func: T,
   ) -> Self {
     let handler: TypedEventHandler<ToastNotification, ToastFailedEventArgs> =
       TypedEventHandler::new(
