@@ -48,7 +48,12 @@ impl ToastsNotifier {
     )
   }
 
-  pub fn get_raw_handle(&self) -> &ToastNotifier {
+  pub(crate) fn get_raw_handle(&self) -> &ToastNotifier {
+    &self._inner
+  }
+
+  #[cfg(feature = "unsafe")]
+  pub unsafe fn inner(&self) -> &ToastNotifier {
     &self._inner
   }
 }

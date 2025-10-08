@@ -9,7 +9,7 @@
 //! # Example
 //! ```rust
 //! use win32_notif::{
-//!  notification::visual::progress::Progress,
+//!  notification::visual::progress::{Progress, ProgressValue},
 //!  string, NotificationBuilder, ToastsNotifier,
 //! };
 //!
@@ -19,9 +19,11 @@
 //!     .visual(Progress::new(
 //!       None,
 //!       string!("Downloading..."),
-//!       string!("0.30"),
+//!       ProgressValue::BindTo("prog"),
 //!       None,
 //!     ))
+//!     // Use the newest data binding method
+//!     .value("prog", "0.3")
 //!     .build(1, &notifier, "a", "ahq")
 //!     .unwrap();
 //!

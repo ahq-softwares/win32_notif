@@ -12,15 +12,17 @@ pub struct Progress {
   value: String,
 }
 
-pub enum ProgressValue {
-  Percentage(u8),
+pub enum ProgressValue<'a> {
+  Percentage(f64),
+  BindTo(&'a str),
   Indeterminate,
 }
 
-impl ToString for ProgressValue {
+impl<'a> ToString for ProgressValue<'a> {
   fn to_string(&self) -> String {
     match self {
-      ProgressValue::Percentage(x) => format!("{}", x / 100),
+      ProgressValue::Percentage(x) => format!("{}", x / 100.0),
+      ProgressValue::BindTo(x) => format!("{{{x}}}"),
       ProgressValue::Indeterminate => "indeterminate".to_string(),
     }
   }
