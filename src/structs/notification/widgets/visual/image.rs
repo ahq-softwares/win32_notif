@@ -77,7 +77,13 @@ pub struct Image {
 impl TextOrImageElement for Image {}
 
 fn guess_src(src: String) -> String {
-  let protocols = ["https://", "http://", "file:///", "ms-appx:///", "ms-appdata:///local/"];
+  let protocols = [
+    "https://",
+    "http://",
+    "file:///",
+    "ms-appx:///",
+    "ms-appdata:///local/",
+  ];
 
   if !(protocols.iter().any(|x| src.starts_with(x))) {
     return format!("file:///{src}");
@@ -90,16 +96,24 @@ impl Image {
   /// The `src` should be the either of the following following
   /// - `https://url or http://url`
   /// - `file:///path/to/file`
-  /// 
+  ///
   /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
   pub fn create<T: Into<String>>(id: u64, src: T) -> Self {
-    Self::new(id, src.into(), None, false, Placement::None, ImageCrop::Default, false)
+    Self::new(
+      id,
+      src.into(),
+      None,
+      false,
+      Placement::None,
+      ImageCrop::Default,
+      false,
+    )
   }
 
   /// The `src` should be the either of the following following
   /// - `https://url or http://url`
   /// - `file:///path/to/file`
-  /// 
+  ///
   /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
   pub fn new(
     id: u64,

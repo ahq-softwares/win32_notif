@@ -100,6 +100,10 @@ impl Text {
     Self::new(id, None, None, body.into())
   }
 
+  pub fn create_binded(id: u64, binds: &str) -> Self {
+    Self::new(id, None, None, format!("{{{binds}}}"))
+  }
+
   pub fn set_align(mut self, align: HintAlign) -> Self {
     self.align = align;
     self

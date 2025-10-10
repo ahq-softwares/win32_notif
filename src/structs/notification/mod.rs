@@ -22,7 +22,7 @@ pub use widgets::*;
 
 /// This is a partial version of notification
 /// You can convert it to a Notification **but it will lost the handler tokens**
-/// 
+///
 /// We have to call [`OwnedPartialNotification::get_partial`] to get the PartialNotification object
 /// to work on it
 pub struct OwnedPartialNotification {
@@ -32,7 +32,7 @@ pub struct OwnedPartialNotification {
 impl OwnedPartialNotification {
   pub fn get_partial<'a>(&'a self) -> PartialNotification<'a> {
     PartialNotification {
-      _toast: &self.notif
+      _toast: &self.notif,
     }
   }
 }
