@@ -1,5 +1,7 @@
 # Win32 Notif
 
+[![Crates.io Version](https://img.shields.io/crates/v/win32_notif?logo=Docs.rs)](https://docs.rs/win32_notif)
+
 A lightweight crate to help you to compose beautiful notifications for Windows OS.
 
 This crate aims for **100%** coverage of the WinRT Toast api as much as possible.
