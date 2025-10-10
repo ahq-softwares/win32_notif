@@ -12,10 +12,11 @@ use header::Header;
 use visual::VisualElement;
 use widgets::commands::Commands;
 use windows::{
-  core::HSTRING,
-  Data::Xml::Dom::XmlDocument,
-  UI::Notifications::{NotificationData, ToastNotification},
+  Data::Xml::Dom::XmlDocument, Foundation::{DateTime, IReference, PropertyValue}, Globalization::Calendar, UI::Notifications::{NotificationData, ToastNotification}, core::HSTRING
 };
+use windows_core::Interface;
+
+use std::time::Duration;
 
 mod widgets;
 pub use widgets::*;
@@ -117,6 +118,7 @@ pub struct NotificationBuilder {
   audio: Option<Audio>,
   header: Option<Header>,
   commands: Option<Commands>,
+  expiry: Option<Duration>,
   visual: Vec<Box<dyn ToastVisualableXML>>,
   actions: Vec<Box<dyn ActionableXML>>,
   on_activated: Option<NotificationActivatedEventHandler>,
@@ -156,6 +158,7 @@ impl NotificationBuilder {
       audio: None,
       commands: None,
       header: None,
+      expiry: None,
       on_activated: None,
       on_dismissed: None,
       on_failed: None,
@@ -176,6 +179,22 @@ impl NotificationBuilder {
       ToastDuration::Short => self.duration = "duration=\"short\"",
       ToastDuration::Long => self.duration = "duration=\"long\"",
     }
+    self
+  }
+
+  /// Sets the ExpirationTime of the notification
+  /// 
+  /// Please note that its accurate upto **seconds only**
+  /// 
+  /// ## Example
+  /// ```rust
+  /// fn main() {
+  ///   let builder = NotificationBuilder::new()
+  ///     .set_expiry(Duration::from_secs(30));
+  /// }
+  /// ```
+  pub fn set_expiry(mut self, expiry: Duration) -> Self {
+    self.expiry = Some(expiry);
     self
   }
 
@@ -319,6 +338,23 @@ impl NotificationBuilder {
       let token = toast.Failed(&x.handler)?;
       failed_event_handler_token = Some(token);
     }
+
+    if let Some(x) = self.expiry {
+      let calendar = Calendar::new()?;
+
+      if x.as_secs() > i32::MAX as u64 {
+        return Err(NotifError::DurationTooLong);
+      }
+
+      calendar.AddSeconds(x.as_secs() as i32)?;
+
+      let dt = calendar.GetDateTime()?;
+
+      toast.SetExpirationTime(
+        &PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?
+      )?;
+    }
+
     toast.SetTag(&tag.into())?;
     toast.SetGroup(&group.into())?;
     toast.SetData(&data)?;

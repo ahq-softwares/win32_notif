@@ -2,6 +2,12 @@
 
 A lightweight crate to help you to compose beautiful notifications for Windows OS.
 
+This crate aims for **100%** coverage of the WinRT Toast api as much as possible.
+
+Thankfully we are quite near that goal due to our unique approach to notification content: **widgets**
+
+You declare your own style, however you like as long as the XML Supports it.
+
 ## Usage
 
 ```rust
@@ -29,3 +35,46 @@ fn main() {
   notif.show().unwrap();
 }
 ```
+
+## What is implemented
+
+We've actually implemented a lot of the Notification APIs
+
+### Containers
+
+- Text
+- Image
+- Progressbar
+- Groups
+- Subgroups
+
+### Handlers
+
+- Foreground OnActivated
+- Foreground OnError
+- Foregrounf OnDismissed
+
+### Utility
+
+- Notification Updating
+- Data Binding (so that you can update notification content)
+- Notification Duration
+- Scenarios
+- Command
+- Actions
+- Inputs
+- Selections
+- Visual
+
+and a lot of other things... 🎉
+
+## Future Project Plan
+
+- COM Activator
+- Background Activation Handling
+
+## What this doesn't cover
+
+- Creation of the registry entries
+
+...and that's it

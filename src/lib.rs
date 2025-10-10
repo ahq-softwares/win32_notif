@@ -108,6 +108,7 @@ pub(crate) mod macros {
 #[derive(Debug)]
 pub enum NotifError {
   WindowsCore(windows::core::Error),
+  DurationTooLong,
   UnknownAndImpossible,
 }
 

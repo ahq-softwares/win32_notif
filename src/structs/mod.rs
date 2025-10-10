@@ -3,6 +3,8 @@ pub mod handler;
 pub mod notification;
 pub mod notifier;
 
+use std::time::Duration;
+
 pub use data::NotificationDataSet;
 pub use handler::{
   NotificationActivatedEventHandler, NotificationDismissedEventHandler,
@@ -12,12 +14,12 @@ pub use handler::{
 pub use notification::{Notification, NotificationBuilder};
 pub use notifier::ToastsNotifier;
 use windows::{
-  core::HSTRING,
-  UI::Notifications::{
+  Foundation::{DateTime, IReference, PropertyValue}, Globalization::Calendar, UI::Notifications::{
     NotificationMirroring as ToastNotificationMirroring, ToastNotification,
     ToastNotificationPriority,
-  },
+  }, core::HSTRING
 };
+use windows_core::Interface;
 
 use crate::NotifError;
 
@@ -80,6 +82,8 @@ pub trait ManageNotification {
   fn notification_mirroring(&self) -> Result<NotificationMirroring, NotifError>;
   fn set_notification_mirroring(&self, mirroring: NotificationMirroring) -> Result<(), NotifError>;
 
+  fn set_expiration(&self, expires: Duration) -> Result<(), NotifError>;
+
   fn set_activated_handler(
     &self,
     handler: NotificationActivatedEventHandler,
@@ -116,6 +120,24 @@ impl<T: NotificationImpl> ManageNotification for T {
     Some(self.notif().Content().ok()?.GetXml().ok()?.to_string())
   }
 
+  fn set_expiration(&self, expires: Duration) -> Result<(), NotifError> {
+    let calendar = Calendar::new()?;
+
+    if expires.as_secs() > i32::MAX as u64 {
+      return Err(NotifError::DurationTooLong);
+    }
+
+    calendar.AddSeconds(expires.as_secs() as i32)?;
+
+    let dt = calendar.GetDateTime()?;
+
+    self.notif().SetExpirationTime(
+      &PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?
+    )?;
+
+    Ok(())
+  }
+
   fn priority(&self) -> Result<NotificationPriority, NotifError> {
     let priority = self.notif().Priority()?.0;
     let def = ToastNotificationPriority::Default.0;
@@ -149,6 +171,7 @@ impl<T: NotificationImpl> ManageNotification for T {
 
     Err(NotifError::UnknownAndImpossible)
   }
+  
   fn set_notification_mirroring(&self, mirroring: NotificationMirroring) -> Result<(), NotifError> {
     let mirroring = match mirroring {
       NotificationMirroring::Allowed => ToastNotificationMirroring::Allowed,
