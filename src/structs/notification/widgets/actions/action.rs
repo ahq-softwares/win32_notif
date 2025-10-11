@@ -1,3 +1,5 @@
+use quick_xml::escape::escape;
+
 use crate::{notification::ActionableXML, ToXML};
 
 use super::ActionElement;
@@ -6,11 +8,11 @@ use super::ActionElement;
 /// Learn More Here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-action>
 pub struct ActionButton {
-  pub content: String,
-  pub arguments: String,
-  pub imageUri: Option<String>,
-  pub hint_inputid: String,
-  pub hint_toolTip: String,
+  content: String,
+  arguments: String,
+  imageUri: Option<String>,
+  hint_inputid: String,
+  hint_toolTip: String,
 
   activationType: String,
   afterActivationBehavior: String,
@@ -20,52 +22,54 @@ pub struct ActionButton {
 
 #[allow(non_snake_case)]
 impl ActionButton {
-  pub fn create(content: &str) -> Self {
-    Self::new(
-      content.into(),
-      content.into(),
-      ActivationType::Foreground,
-      AfterActivationBehavior::Default,
-      None,
-      "".into(),
-      HintButtonStyle::None,
-      "".into(),
-      false,
-    )
+  pub fn create<T: AsRef<str>>(content: T) -> Self {
+    unsafe {
+      Self::new_unchecked(
+        escape(content.as_ref()).into(),
+        escape(content.as_ref()).into(),
+        ActivationType::Foreground,
+        AfterActivationBehavior::Default,
+        None,
+        "".into(),
+        HintButtonStyle::None,
+        "".into(),
+        false,
+      )
+    }
   }
 
-  pub fn set_id(mut self, id: &str) -> Self {
-    self.arguments = id.into();
+  pub fn with_id(mut self, id: &str) -> Self {
+    self.arguments = escape(id).into();
     self
   }
 
   /// Provide input id to place the button near an input
-  pub fn set_input_id(mut self, id: &str) -> Self {
-    self.hint_inputid = id.into();
+  pub fn with_input_id(mut self, id: &str) -> Self {
+    self.hint_inputid = escape(id).into();
     self
   }
 
-  pub fn set_tooltip(mut self, tooltip: &str) -> Self {
-    self.hint_toolTip = tooltip.into();
+  pub fn with_tooltip(mut self, tooltip: &str) -> Self {
+    self.hint_toolTip = escape(tooltip).into();
     self
   }
 
-  pub fn set_image_uri(mut self, uri: &str) -> Self {
-    self.imageUri = Some(uri.into());
+  pub fn with_image_uri(mut self, uri: &str) -> Self {
+    self.imageUri = Some(escape(uri).into());
     self
   }
 
-  pub fn set_context_menu_placement(mut self, enabled: bool) -> Self {
+  pub fn with_context_menu_placement(mut self, enabled: bool) -> Self {
     self.placement = enabled;
     self
   }
 
-  pub fn set_activation_type(mut self, activation_type: ActivationType) -> Self {
+  pub fn with_activation_type(mut self, activation_type: ActivationType) -> Self {
     self.activationType = activation_type.into();
     self
   }
 
-  pub fn set_after_activation_behavior(
+  pub fn with_after_activation_behavior(
     mut self,
     after_activation_behavior: AfterActivationBehavior,
   ) -> Self {
@@ -73,17 +77,17 @@ impl ActionButton {
     self
   }
 
-  pub fn set_button_style(mut self, hint_buttonStyle: HintButtonStyle) -> Self {
+  pub fn with_button_style(mut self, hint_buttonStyle: HintButtonStyle) -> Self {
     self.hint_buttonStyle = hint_buttonStyle.into();
     self
   }
 
-  pub fn set_content(mut self, content: &str) -> Self {
-    self.content = content.into();
+  pub fn with_content(mut self, content: &str) -> Self {
+    self.content = escape(content).into();
     self
   }
 
-  pub fn new(
+  pub unsafe fn new_unchecked(
     content: String,
     arguments: String,
     activation_type: ActivationType,
@@ -112,7 +116,7 @@ impl ToXML for ActionButton {
   fn to_xml(&self) -> String {
     format!(
       r#"
-          <action content={:#?} arguments={:#?} activationType={:#?} afterActivationBehavior={:#?} imageUri={:#?} hint-inputId={:#?} hint-buttonStyle={:#?} hint-toolTip={:#?} {} />
+          <action content="{}" arguments="{}" activationType="{}" afterActivationBehavior="{}" imageUri="{}" hint-inputId="{}" hint-buttonStyle="{}" hint-toolTip="{}" {} />
         "#,
       self.content,
       self.arguments,

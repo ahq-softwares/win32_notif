@@ -15,25 +15,25 @@ pub fn main() {
   let notifier = ToastsNotifier::new("Microsoft.Windows.Explorer").unwrap();
 
   let notification = NotificationBuilder::new()
-    .set_scenario(Scenario::IncomingCall)
-    .set_use_button_style(true)
+    .with_scenario(Scenario::IncomingCall)
+    .with_use_button_style(true)
     .visual(
       Group::new()
-        .subgroup(
-          SubGroup::new().visual(Text::create(0, "Hello World").set_style(HintStyle::Title)),
+        .with_subgroup(
+          SubGroup::new().with_visual(Text::create(0, "Hello World").with_style(HintStyle::Title)),
         )
-        .subgroup(
-          SubGroup::new().visual(
+        .with_subgroup(
+          SubGroup::new().with_visual(
             Text::create(0, "Hello World x2")
-              .set_style(HintStyle::Header)
-              .set_align(HintAlign::Right),
+              .with_style(HintStyle::Header)
+              .with_align(HintAlign::Right),
           ),
         ),
     )
     .action(
       ActionButton::create("Answer")
-        .set_tooltip("Answer")
-        .set_id("answer"),
+        .with_tooltip("Answer")
+        .with_id("answer"),
     )
     .build(1, &notifier, "a", "ahq")
     .expect("Error");

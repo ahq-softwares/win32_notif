@@ -30,12 +30,16 @@ pub struct Command {
 
 impl Command {
   pub fn new(arguments: Option<String>, id: Option<CommandId>) -> Self {
+    if let Some(x) = &arguments {
+      debug_assert!(x.chars().all(|x| x.is_alphanumeric()));
+    }
+
     Self {
       id: id.map_or_else(
         || "".into(),
-        |x| format!("id={:#?}", Into::<String>::into(x)),
+        |x| format!("id=\"{}\"", Into::<String>::into(x)),
       ),
-      arguments: arguments.map_or_else(|| "".into(), |x| format!("arguments={:#?}", x)),
+      arguments: arguments.map_or_else(|| "".into(), |x| format!("arguments=\"{}\"", x)),
     }
   }
 }

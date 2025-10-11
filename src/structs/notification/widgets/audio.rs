@@ -22,7 +22,7 @@ impl ToXML for Audio {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <audio src={:#?} loop={:#?} silent={:#?} />
+        <audio src="{}" loop="{}" silent="{}" />
       "#,
       self.src, self.r#loop, self.silent
     )

@@ -1,4 +1,7 @@
-use crate::{notification::ToastVisualableXML, ToXML};
+use crate::{
+  notification::{AdaptiveText, ToastVisualableXML},
+  ToXML,
+};
 
 use super::VisualElement;
 
@@ -6,8 +9,8 @@ use super::VisualElement;
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-progress>
 pub struct Progress {
-  pub title: Option<String>,
-  pub value_string_override: Option<String>,
+  title: Option<String>,
+  value_string_override: Option<String>,
   status: String,
   value: String,
 }
@@ -22,33 +25,37 @@ impl<'a> ToString for ProgressValue<'a> {
   fn to_string(&self) -> String {
     match self {
       ProgressValue::Percentage(x) => format!("{}", x / 100.0),
-      ProgressValue::BindTo(x) => format!("{{{x}}}"),
+      ProgressValue::BindTo(x) => {
+        debug_assert!(x.chars().all(|x| x.is_alphabetic()));
+
+        format!("{{{x}}}")
+      }
       ProgressValue::Indeterminate => "indeterminate".to_string(),
     }
   }
 }
 
 impl Progress {
-  pub fn create(status_text: &str, value: ProgressValue) -> Self {
-    Self::new(None, status_text.into(), value, None)
+  pub fn create(status_text: AdaptiveText, value: ProgressValue) -> Self {
+    unsafe { Self::new_unchecked(None, status_text.to_string(), value, None) }
   }
 
-  pub fn set_title(mut self, title: String) -> Self {
-    self.title = Some(title);
+  pub fn with_title<T: AsRef<str>>(mut self, title: AdaptiveText) -> Self {
+    self.title = Some(title.to_string());
     self
   }
 
-  pub fn set_value(mut self, value: ProgressValue) -> Self {
+  pub fn with_value(mut self, value: ProgressValue) -> Self {
     self.value = value.to_string();
     self
   }
 
-  pub fn override_value_string(mut self, value: String) -> Self {
-    self.value_string_override = Some(value);
+  pub fn override_value_string(mut self, value: AdaptiveText) -> Self {
+    self.value_string_override = Some(value.to_string());
     self
   }
 
-  pub fn new(
+  pub unsafe fn new_unchecked(
     title: Option<String>,
     status_text: String,
     value: ProgressValue,
@@ -71,7 +78,7 @@ impl ToXML for Progress {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <progress {} status={:#?} value={:#?} {} />
+        <progress {} status="{}" value="{}" {} />
       "#,
       self
         .title

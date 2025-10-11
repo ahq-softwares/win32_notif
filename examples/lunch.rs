@@ -11,7 +11,7 @@ use win32_notif::{
     visual::{Image, Placement, Text},
     ToastDuration,
   },
-  NotificationActivatedEventHandler, NotificationBuilder, ToastsNotifier,
+  ManageNotification, NotificationActivatedEventHandler, NotificationBuilder, ToastsNotifier,
 };
 
 fn main() {
@@ -36,19 +36,19 @@ fn main() {
     .visual(Text::create(1, "Would you like to order lunch today?"))
     .action(
       ActionButton::create("Yes")
-        .set_tooltip("Yes")
-        .set_activation_type(ActivationType::Foreground)
-        .set_after_activation_behavior(AfterActivationBehavior::PendingUpdate)
-        .set_id("yes"),
+        .with_tooltip("Yes")
+        .with_activation_type(ActivationType::Foreground)
+        .with_after_activation_behavior(AfterActivationBehavior::PendingUpdate)
+        .with_id("yes"),
     )
     .action(
       ActionButton::create("No")
-        .set_tooltip("No")
-        .set_activation_type(ActivationType::Foreground)
-        .set_after_activation_behavior(AfterActivationBehavior::Default)
-        .set_id("no"),
+        .with_tooltip("No")
+        .with_activation_type(ActivationType::Foreground)
+        .with_after_activation_behavior(AfterActivationBehavior::Default)
+        .with_id("no"),
     )
-    .set_duration(ToastDuration::Long)
+    .with_duration(ToastDuration::Long)
     .on_activated(NotificationActivatedEventHandler::new(|_a, b| {
       println!("Triggered");
       let args = b.unwrap();

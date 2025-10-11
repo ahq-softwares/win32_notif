@@ -10,7 +10,7 @@ Thankfully we are quite near that goal due to our unique approach to notificatio
 
 You declare your own style, however you like as long as the XML Supports it.
 
-## Usage
+## Basic Usage
 
 ```rust
 use win32_notif::{Notif, NotifIcon, NotifState, NotifType, NotifFlags};
@@ -18,6 +18,7 @@ use win32_notif::{Notif, NotifIcon, NotifState, NotifType, NotifFlags};
 fn main() {
   let notifier = ToastsNotifier::new("windows app user model id").unwrap();
 
+  // Not correct, undergoing massive rewrite
   let notif = NotificationBuilder::new()
     .visual(Text::new(2, None, None, string!("Hello There 👋🏼")))
     .action(ActionButton::new(
@@ -74,9 +75,5 @@ and a lot of other things... 🎉
 
 - COM Activator
 - Background Activation Handling
-
-## What this doesn't cover
-
-- Creation of the registry entries
 
 ...and that's it

@@ -1,3 +1,5 @@
+use quick_xml::escape::escape;
+
 use crate::ToXML;
 
 /// Learn more about it here
@@ -17,9 +19,9 @@ impl Header {
     activation_type: Option<HeaderActivationType>,
   ) -> Self {
     Self {
-      id: id.into(),
-      title: title.into(),
-      arguments: arguments.into(),
+      id: escape(id).into(),
+      title: escape(title).into(),
+      arguments: escape(arguments).into(),
       activation_type: activation_type.unwrap_or_default().into(),
     }
   }
@@ -29,7 +31,7 @@ impl ToXML for Header {
   fn to_xml(&self) -> String {
     format!(
       r#"
-      <header title={:#?} arguments={:#?} id={:#?} activationType={:#?} />
+      <header title=\"{}\" arguments=\"{}\" id=\"{}\" activationType="{}" />
     "#,
       self.title, self.arguments, self.id, self.activation_type
     )

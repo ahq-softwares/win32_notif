@@ -1,4 +1,6 @@
-use crate::{map, notification::ActionableXML, ToXML};
+use quick_xml::escape::escape;
+
+use crate::{ToXML, map, notification::ActionableXML};
 
 use super::ActionElement;
 
@@ -6,9 +8,9 @@ use super::ActionElement;
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-input>
 pub struct Input {
-  pub id: String,
-  pub title: String,
-  pub placeHolder: String,
+  id: String,
+  title: String,
+  placeHolder: String,
   children: String,
   r#type: String,
 }
@@ -22,12 +24,14 @@ pub enum InputType {
 
 impl Input {
   pub fn create_text_input(id: &str, title: &str, place_holder: &str) -> Self {
-    Self::new(
-      id.into(),
-      title.into(),
-      InputType::Text,
-      place_holder.into(),
-    )
+    unsafe {
+      Self::new_unchecked(
+        escape(id).into(),
+        escape(title).into(),
+        InputType::Text,
+        escape(place_holder).into(),
+      )
+    }
   }
 
   pub fn create_selection_input(
@@ -37,15 +41,15 @@ impl Input {
     selections: Vec<Selection>,
   ) -> Self {
     Self {
-      id: id.into(),
-      title: title.into(),
+      id: escape(id).into(),
+      title: escape(title).into(),
       r#type: "selection".into(),
-      placeHolder: place_holder.into(),
+      placeHolder: escape(place_holder).into(),
       children: map!(selections),
     }
   }
 
-  pub fn new(id: String, title: String, r#type: InputType, place_holder: String) -> Self {
+  pub unsafe fn new_unchecked(id: String, title: String, r#type: InputType, place_holder: String) -> Self {
     let (r#type, ch) = match r#type {
       InputType::Text => ("text", vec![]),
       InputType::Selection(ch) => ("selection", ch),
@@ -60,7 +64,7 @@ impl Input {
     }
   }
 
-  pub fn set_selection(&mut self, children: Vec<Selection>) -> &mut Self {
+  pub fn with_selection(&mut self, children: Vec<Selection>) -> &mut Self {
     self.children = map!(children);
     self
   }
@@ -72,7 +76,7 @@ impl ToXML for Input {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <input id={:#?} title={:#?} placeHolderContent={:#?} type={:#?} >
+        <input id="{}" title="{}" placeHolderContent="{}" type="{}" >
           {}
         </input>
       "#,
@@ -84,14 +88,23 @@ impl ToXML for Input {
 /// Learn more here
 /// <https://learn.microsoft.com/en-us/uwp/schemas/tiles/toastschema/element-input>
 pub struct Selection {
-  pub id: String,
-  pub content: String,
+  id: String,
+  content: String,
+}
+
+impl Selection {
+  pub fn new(id: &str, content: &str) -> Self {
+    Self {
+      content: escape(content).into(),
+      id: escape(id).into()
+    }
+  }
 }
 
 impl ToXML for Selection {
   fn to_xml(&self) -> String {
     format!(
-      r#"<selection id={:#?} content={:#?} />"#,
+      r#"<selection id="{}" content="{}" />"#,
       &self.id, &self.content
     )
   }

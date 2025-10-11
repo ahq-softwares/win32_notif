@@ -182,7 +182,7 @@ impl ToXML for Image {
   fn to_xml(&self) -> String {
     format!(
       r#"
-        <image id="{id:#?}" {margin} {align} src={src} {add_image_query} {alt} {placement} {crop} />
+        <image id="{id}" {margin} {align} src="{src}" {add_image_query} {alt} {placement} {crop} />
       "#,
       align = self.align.to_string(),
       margin = match self.no_margin {
@@ -190,11 +190,11 @@ impl ToXML for Image {
         false => "".to_string(),
       },
       id = self.id,
-      src = format!("{:?}", self.src).replace("\\\\", "\\"),
+      src = format!("{}", self.src).replace("\\\\", "\\"),
       alt = self
         .alt
         .clone()
-        .map_or_else(|| string!(""), |x| format!("alt={x:#?}")),
+        .map_or_else(|| string!(""), |x| format!("alt=\"{x}\"")),
       add_image_query = if self.add_image_query {
         "addImageQuery=\"True\""
       } else {

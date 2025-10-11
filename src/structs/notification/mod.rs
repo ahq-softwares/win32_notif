@@ -12,7 +12,11 @@ use header::Header;
 use visual::VisualElement;
 use widgets::commands::Commands;
 use windows::{
-  Data::Xml::Dom::XmlDocument, Foundation::{DateTime, IReference, PropertyValue}, Globalization::Calendar, UI::Notifications::{NotificationData, ToastNotification}, core::HSTRING
+  core::HSTRING,
+  Data::Xml::Dom::XmlDocument,
+  Foundation::{DateTime, IReference, PropertyValue},
+  Globalization::Calendar,
+  UI::Notifications::{NotificationData, ToastNotification},
 };
 use windows_core::Interface;
 
@@ -73,9 +77,6 @@ impl<'a> Notification<'a> {
     Ok(self._notifier.get_raw_handle().Show(&self._toast)?)
   }
 
-  #[cfg_attr(docsrs, doc(cfg(feature = "unsafe")))]
-  #[cfg(feature = "unsafe")]
-  /// Required Features: unsafe
   pub unsafe fn as_raw(&self) -> &ToastNotification {
     &self._toast
   }
@@ -173,7 +174,7 @@ impl NotificationBuilder {
   impl_mut!(header -> Header);
   impl_mut!(commands -> Commands);
 
-  pub fn set_duration(mut self, duration: ToastDuration) -> Self {
+  pub fn with_duration(mut self, duration: ToastDuration) -> Self {
     match duration {
       ToastDuration::None => self.duration = "",
       ToastDuration::Short => self.duration = "duration=\"short\"",
@@ -183,22 +184,22 @@ impl NotificationBuilder {
   }
 
   /// Sets the ExpirationTime of the notification
-  /// 
+  ///
   /// Please note that its accurate upto **seconds only**
-  /// 
+  ///
   /// ## Example
   /// ```rust
   /// fn main() {
   ///   let builder = NotificationBuilder::new()
-  ///     .set_expiry(Duration::from_secs(30));
+  ///     .with_expiry(Duration::from_secs(30));
   /// }
   /// ```
-  pub fn set_expiry(mut self, expiry: Duration) -> Self {
+  pub fn with_expiry(mut self, expiry: Duration) -> Self {
     self.expiry = Some(expiry);
     self
   }
 
-  pub fn set_scenario(mut self, scenario: Scenario) -> Self {
+  pub fn with_scenario(mut self, scenario: Scenario) -> Self {
     match scenario {
       Scenario::Default => self.scenario = "",
       Scenario::Alarm => self.scenario = "scenario=\"alarm\"",
@@ -209,7 +210,7 @@ impl NotificationBuilder {
     self
   }
 
-  pub fn set_use_button_style(mut self, use_button_style: bool) -> Self {
+  pub fn with_use_button_style(mut self, use_button_style: bool) -> Self {
     if use_button_style {
       self.use_button_style = "useButtonStyle=\"True\""
     } else {
@@ -350,9 +351,8 @@ impl NotificationBuilder {
 
       let dt = calendar.GetDateTime()?;
 
-      toast.SetExpirationTime(
-        &PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?
-      )?;
+      toast
+        .SetExpirationTime(&PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?)?;
     }
 
     toast.SetTag(&tag.into())?;

@@ -19,7 +19,7 @@ impl Group {
     Self::default()
   }
 
-  pub fn subgroup<T: SubgroupXML + 'static>(mut self, subgroup: T) -> Self {
+  pub fn with_subgroup<T: SubgroupXML + 'static>(mut self, subgroup: T) -> Self {
     self.subgroups.push(Box::new(subgroup));
     self
   }

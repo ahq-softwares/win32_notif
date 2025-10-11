@@ -56,9 +56,6 @@ use std::{error::Error, fmt::Display};
 
 pub use structs::*;
 
-/// Re-export of windows crate
-pub use windows;
-
 macro_rules! from_impl {
   ($x:ty => $y:ident) => {
     impl From<$x> for NotifError {
@@ -67,42 +64,6 @@ macro_rules! from_impl {
       }
     }
   };
-}
-
-pub(crate) mod macros {
-  #[macro_export]
-  macro_rules! mktrait {
-    (
-      trait $name:ident {
-        $($x:tt)*
-      }
-    ) => {
-      #[cfg(feature = "unsafe")]
-      pub trait $name {
-        $($x)*
-      }
-
-      #[cfg(not(feature = "unsafe"))]
-      pub(crate) trait $name {
-        $($x)*
-      }
-    };
-    (
-      trait $name:ident: $($trait:tt),+ {
-        $($x:tt)*
-      }
-    ) => {
-      #[cfg(feature = "unsafe")]
-      pub trait $name: $($trait)++ {
-        $($x)*
-      }
-
-      #[cfg(not(feature = "unsafe"))]
-      pub(crate) trait $name: $($trait)++ {
-        $($x)*
-      }
-    };
-  }
 }
 
 #[derive(Debug)]

@@ -37,12 +37,18 @@ impl ToastsNotifier {
     Self::new_inner(app_id, None)
   }
 
-  #[cfg(feature = "unsafe")]
-  pub unsafe fn new_with_guid<T: Into<String>>(app_id: T, guid: Option<u128>) -> Result<Self, NotifError> {
+  #[cfg(feature = "experimental")]
+  pub unsafe fn new_with_guid<T: Into<String>>(
+    app_id: T,
+    guid: Option<u128>,
+  ) -> Result<Self, NotifError> {
     Self::new_inner(app_id, guid)
   }
-  
-  pub(crate) fn new_inner<T: Into<String>>(app_id: T, guid: Option<u128>) -> Result<Self, NotifError> {
+
+  pub(crate) fn new_inner<T: Into<String>>(
+    app_id: T,
+    guid: Option<u128>,
+  ) -> Result<Self, NotifError> {
     let app_id = app_id.into();
     if let Some(guid) = guid {
       let app_id = app_id.clone();
@@ -109,8 +115,7 @@ impl ToastsNotifier {
     &self._inner
   }
 
-  #[cfg(feature = "unsafe")]
-  pub unsafe fn inner(&self) -> &ToastNotifier {
+  pub unsafe fn as_raw(&self) -> &ToastNotifier {
     &self._inner
   }
 }
@@ -122,8 +127,7 @@ pub struct ToastsManager {
 }
 
 impl ToastsManager {
-  #[cfg(feature = "unsafe")]
-  pub unsafe fn inner(&self) -> &ToastNotificationHistory {
+  pub unsafe fn as_raw(&self) -> &ToastNotificationHistory {
     &self.inner
   }
 

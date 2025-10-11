@@ -11,7 +11,7 @@ use win32_notif::{
       text::{HintAlign, HintStyle},
       Text,
     },
-    Scenario,
+    AdaptiveText, Scenario,
   },
   NotificationBuilder, ToastsNotifier,
 };
@@ -27,22 +27,23 @@ pub fn main() {
   argv.next();
   argv.next();
 
-  if let Some(x) = argv.next() {
+  if let Some(_) = argv.next() {
     let notification = NotificationBuilder::new()
-      .set_use_button_style(true)
+      .with_use_button_style(true)
       .visual(
         Text::create_binded(0, "hi")
-          .set_style(HintStyle::Header)
-          .set_align(HintAlign::Right),
+          .with_style(HintStyle::Header)
+          .with_align(HintAlign::Right),
       )
       .value("hi", "This is binded string")
       .action(
-        ActionButton::create("Answer")
-          .set_tooltip("Answer")
-          .set_id("answer")
-          .set_activation_type(ActivationType::Background)
-          .set_after_activation_behavior(AfterActivationBehavior::PendingUpdate),
+        ActionButton::create("test")
+          .with_tooltip("Answer")
+          .with_id("answer")
+          .with_activation_type(ActivationType::Background)
+          .with_after_activation_behavior(AfterActivationBehavior::PendingUpdate),
       )
+      .value("test", "Hello World")
       .build(1, &notifier, "a", "ahq")
       .expect("Error");
 

@@ -14,10 +14,13 @@ pub use handler::{
 pub use notification::{Notification, NotificationBuilder};
 pub use notifier::ToastsNotifier;
 use windows::{
-  Foundation::{DateTime, IReference, PropertyValue}, Globalization::Calendar, UI::Notifications::{
+  core::HSTRING,
+  Foundation::{DateTime, IReference, PropertyValue},
+  Globalization::Calendar,
+  UI::Notifications::{
     NotificationMirroring as ToastNotificationMirroring, ToastNotification,
     ToastNotificationPriority,
-  }, core::HSTRING
+  },
 };
 use windows_core::Interface;
 
@@ -131,9 +134,9 @@ impl<T: NotificationImpl> ManageNotification for T {
 
     let dt = calendar.GetDateTime()?;
 
-    self.notif().SetExpirationTime(
-      &PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?
-    )?;
+    self
+      .notif()
+      .SetExpirationTime(&PropertyValue::CreateDateTime(dt)?.cast::<IReference<DateTime>>()?)?;
 
     Ok(())
   }
@@ -171,7 +174,7 @@ impl<T: NotificationImpl> ManageNotification for T {
 
     Err(NotifError::UnknownAndImpossible)
   }
-  
+
   fn set_notification_mirroring(&self, mirroring: NotificationMirroring) -> Result<(), NotifError> {
     let mirroring = match mirroring {
       NotificationMirroring::Allowed => ToastNotificationMirroring::Allowed,
