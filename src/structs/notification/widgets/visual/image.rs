@@ -112,9 +112,12 @@ impl Image {
     )
   }
 
-  /// The `src` should be the either of the following following
-  /// - `https://url or http://url`
-  /// - `file:///path/to/file`
+  /// The `src` should be in the form of `file:///path/to/file`
+  /// 
+  /// Technically `https://` and `http://` too should work according to the
+  /// C# Windows UWP Notifications, but we were not able to replicate that.
+  /// 
+  /// We still allow setting http or https including others of windows C# API
   ///
   /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
   pub fn new(

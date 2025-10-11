@@ -50,7 +50,7 @@ impl Progress {
     self
   }
 
-  pub fn override_value_string(mut self, value: AdaptiveText) -> Self {
+  pub fn with_override_value(mut self, value: AdaptiveText) -> Self {
     self.value_string_override = Some(value.to_string());
     self
   }

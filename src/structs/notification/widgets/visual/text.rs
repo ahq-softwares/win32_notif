@@ -130,22 +130,27 @@ impl Text {
   }
 
   /// Only for IncomingCall scenarios
-  pub fn align_center(mut self, center: bool) -> Self {
-    self.callScenarioCenterAlign = center;
+  pub fn with_align_center(mut self, shall_it_align_center: bool) -> Self {
+    self.callScenarioCenterAlign = shall_it_align_center;
     self
   }
 
-  pub fn wrap(mut self, wrap: bool) -> Self {
+  pub fn with_wrap(mut self, wrap: bool) -> Self {
     self.wrap = wrap;
     self
   }
 
-  pub fn max_lines(mut self, max_lines: u32) -> Self {
+  #[deprecated(since="0.10.2", note="Use [Self::with_wrap] instead")]
+  pub fn wrap(self, wrap: bool) -> Self {
+    self.with_wrap(wrap)
+  }
+
+  pub fn with_max_lines(mut self, max_lines: u32) -> Self {
     self.maxLines = max_lines;
     self
   }
 
-  pub fn min_lines(mut self, min_lines: u32) -> Self {
+  pub fn with_min_lines(mut self, min_lines: u32) -> Self {
     self.minLines = min_lines;
     self
   }

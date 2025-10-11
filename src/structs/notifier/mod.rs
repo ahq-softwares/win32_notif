@@ -53,6 +53,8 @@ impl ToastsNotifier {
     if let Some(guid) = guid {
       let app_id = app_id.clone();
       thread::spawn(move || {
+        // EXPERIMENTAL
+        // Basically setting up a whole XML Server like C# (Packaged Apps can do)
         unsafe {
           SetCurrentProcessExplicitAppUserModelID(&HSTRING::from(app_id.as_str())).unwrap();
 

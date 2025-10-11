@@ -13,14 +13,14 @@ fn main() {
   let notif = NotificationBuilder::new()
     .visual(
       Text::create(0, "Welcome to \"win32_notif\"!! 👋")
-        .align_center(true)
-        .wrap(true)
+        .with_align_center(true)
+        .with_wrap(true)
         .with_style(HintStyle::Title)
     )
     .visual(
       Text::create_binded(1, "desc")
-        .align_center(true)
-        .wrap(true)
+        .with_align_center(true)
+        .with_wrap(true)
         .with_style(HintStyle::Body)
     )
     .visual(

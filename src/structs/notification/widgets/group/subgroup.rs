@@ -70,6 +70,7 @@ impl ToXML for SubGroup {
       .collect::<Vec<_>>()
       .join("\n");
 
+    // XML Formatting
     format!(
       "
       <subgroup {wt} {stack}>
