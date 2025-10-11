@@ -11,7 +11,7 @@ use win32_notif::{
     visual::{Image, Placement, Text},
     ToastDuration,
   },
-  ManageNotification, NotificationActivatedEventHandler, NotificationBuilder, ToastsNotifier,
+  NotificationActivatedEventHandler, NotificationBuilder, ToastsNotifier,
 };
 
 fn main() {
@@ -29,7 +29,7 @@ fn main() {
       Some(HeaderActivationType::Foreground),
     ))
     .visual(
-      Image::create(20, format!("file:///{path}"))
+      Image::create(20, format!("file:///{path}").as_str())
         .with_placement(Placement::Hero)
         .without_image_query(),
     )

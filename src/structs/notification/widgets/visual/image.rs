@@ -1,3 +1,5 @@
+use quick_xml::escape::escape;
+
 use crate::{notification::ToastVisualableXML, ToXML};
 
 use super::{TextOrImageElement, VisualElement};
@@ -98,10 +100,10 @@ impl Image {
   /// - `file:///path/to/file`
   ///
   /// If none of the above is provided, the `src` will be set to `file:///path/to/file`
-  pub fn create<T: Into<String>>(id: u64, src: T) -> Self {
+  pub fn create(id: u64, src: &str) -> Self {
     Self::new(
       id,
-      src.into(),
+      escape(src).into(),
       None,
       false,
       Placement::None,

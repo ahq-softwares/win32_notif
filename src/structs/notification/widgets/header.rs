@@ -31,7 +31,7 @@ impl ToXML for Header {
   fn to_xml(&self) -> String {
     format!(
       r#"
-      <header title=\"{}\" arguments=\"{}\" id=\"{}\" activationType="{}" />
+      <header title="{}" arguments="{}" id="{}" activationType="{}" />
     "#,
       self.title, self.arguments, self.id, self.activation_type
     )

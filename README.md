@@ -13,29 +13,42 @@ You declare your own style, however you like as long as the XML Supports it.
 ## Basic Usage
 
 ```rust
-use win32_notif::{Notif, NotifIcon, NotifState, NotifType, NotifFlags};
+use std::{path::absolute, thread::sleep, time::Duration};
+
+use win32_notif::{
+  NotificationBuilder, NotificationDataSet, notification::visual::{Image, Placement, Text, image::{AdaptiveImageAlign, ImageCrop}, text::HintStyle}, notifier::ToastsNotifier
+};
 
 fn main() {
-  let notifier = ToastsNotifier::new("windows app user model id").unwrap();
+  let notifier = ToastsNotifier::new("Microsoft.Windows.Explorer").unwrap();
 
-  // Not correct, undergoing massive rewrite
   let notif = NotificationBuilder::new()
-    .visual(Text::new(2, None, None, string!("Hello There 👋🏼")))
-    .action(ActionButton::new(
-      string!("Yes"),
-      string!("yes"),
-      ActivationType::Foreground,
-      AfterActivationBehavior::Default,
-      None,
-      string!("yes"),
-      HintButtonStyle::Success,
-      string!("Yes"),
-      false
-    ))
-    .build(2, &*NOTIFIER, "tag", "group")
+    .visual(
+      Text::create(0, "Welcome to \"win32_notif\"!! 👋")
+        .align_center(true)
+        .wrap(true)
+        .with_style(HintStyle::Title)
+    )
+    .visual(
+      Text::create_binded(1, "desc")
+        .align_center(true)
+        .wrap(true)
+        .with_style(HintStyle::Body)
+    )
+    .value("desc", "Data binding works as well {WOW}!")
+    .build(0, &notifier, "01", "readme")
     .unwrap();
 
-  notif.show().unwrap();
+  notif.show()
+    .unwrap();
+
+  sleep(Duration::from_secs(1));
+
+  let data = NotificationDataSet::new().unwrap();
+
+  data.insert("desc", "Hello, the message is edited").unwrap();
+
+  notifier.update(&data, "readme", "01").unwrap();
 }
 ```
 
@@ -68,8 +81,9 @@ We've actually implemented a lot of the Notification APIs
 - Inputs
 - Selections
 - Visual
+- **_Idiomatic Rust Builder Style (with\_... methods)_**
 
-and a lot of other things... 🎉
+**_and a lot of other things... 🎉_**
 
 ## Future Project Plan
 
