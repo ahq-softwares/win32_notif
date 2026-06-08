@@ -1,6 +1,6 @@
 [package]
 name = "win32_notif"
-version = "0.15.3"
+version = "0.15.4"
 edition = "2021"
 rust-version = "1.82"
 description = "Wrapper around Windows UWP XAML (WinRT) Notification api"
@@ -36,15 +36,14 @@ windows-core = "~0.62"
 windows-registry = { version = "~0.6", optional = true }
 
 [features]
-default = ["registration"]
+default = []
 
 # Register your AUMID in win32 registry
 registration = ["dep:windows-registry"]
 
-# Compatibility purposes
-# Stability not guaranteed
+# Exposes "unsafe by design" APIs
 unsafe = ["experimental"]
 
 # Allows you to access the underlying experimental apis
-# Stability not guaranteed
+# May/May Not be stable later
 experimental = []
