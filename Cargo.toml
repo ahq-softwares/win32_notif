@@ -32,7 +32,7 @@ windows = { version = "~0.62", features = [
   "Foundation_Collections",
   "ApplicationModel",
 ] }
-windows-core = "~0.62"
+windows-core = "~0.100"
 windows-registry = { version = "~0.6", optional = true }
 
 [features]
