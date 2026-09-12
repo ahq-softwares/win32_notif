@@ -33,7 +33,7 @@ windows = { version = "~0.62", features = [
   "ApplicationModel",
 ] }
 windows-core = "~0.62"
-windows-registry = { version = "~0.6", optional = true }
+windows-registry = { version = "~0.100", optional = true }
 
 [features]
 default = ["registration"]
